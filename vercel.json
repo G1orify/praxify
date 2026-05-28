@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "http://85.11.167.143/api/:path*"
+    },
+    {
+      "source": "/recordings/:path*",
+      "destination": "http://85.11.167.143/recordings/:path*"
+    },
+    {
+      "source": "/clones/:path*",
+      "destination": "http://85.11.167.143/clones/:path*"
+    }
+  ]
+}
