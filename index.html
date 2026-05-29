@@ -535,6 +535,7 @@
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('dashboard')">DASHBOARD</button>
         <button class="tab-btn" onclick="switchTab('sniper')">SNIPER_LINK</button>
+        <button class="tab-btn" onclick="logoutUser()" style="border-color: #ff3333; color: #ff3333;">LOGOUT</button>
       </div>
     </header>
 
@@ -710,6 +711,13 @@
         loadCaptcha();
       }
     });
+
+    function logoutUser() {
+      localStorage.removeItem('auth_token');
+      document.getElementById('auth-overlay').classList.add('active');
+      loadCaptcha();
+      if (sniperInterval) clearInterval(sniperInterval);
+    }
 
 
     // Tab Switching
