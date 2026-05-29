@@ -607,17 +607,6 @@
   
 
   <script>
-    const originalFetch = window.fetch;
-    window.fetch = async function(...args) {
-      const token = localStorage.getItem('auth_token');
-      if (token) {
-        if (!args[1]) args[1] = {};
-        if (!args[1].headers) args[1].headers = {};
-        args[1].headers['Authorization'] = `Bearer ${token}`;
-      }
-      return originalFetch.apply(this, args);
-    };
-
     function escapeHTML(str) {
       if (str === null || str === undefined) return '';
       return String(str).replace(/[&<>"']/g, function(m) {
