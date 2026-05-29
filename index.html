@@ -726,7 +726,18 @@
         const bots = await res.json();
         
         const grid = document.getElementById('sniper-grid');
-        if (!bots || bots.length === 0) {
+        
+        if (bots.error) {
+          grid.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-exclamation-triangle" style="color: #ff3333;"></i>
+              <h3>API BLOCKED</h3>
+              <p>${bots.error}</p>
+            </div>`;
+          return;
+        }
+
+        if (!bots || !Array.isArray(bots) || bots.length === 0) {
           grid.innerHTML = `
             <div class="empty-state">
               <i class="fas fa-satellite-dish"></i>
