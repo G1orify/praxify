@@ -607,6 +607,17 @@
   
 
   <script>
+    const originalFetch = window.fetch;
+    window.fetch = async function(...args) {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        if (!args[1]) args[1] = {};
+        if (!args[1].headers) args[1].headers = {};
+        args[1].headers['Authorization'] = `Bearer ${token}`;
+      }
+      return originalFetch.apply(this, args);
+    };
+
     function escapeHTML(str) {
       if (str === null || str === undefined) return '';
       return String(str).replace(/[&<>"']/g, function(m) {
@@ -909,10 +920,6 @@
                 <button class="snipe-btn" onclick="sendSnipe(${bot.bot_id})">[ SNIPE CH ]</button>
                 <button class="snipe-btn" onclick="sendUserSnipe(${bot.bot_id})" style="border-color: #00ff00; color: #00ff00; min-width: 100px;">[ SNIPE USR ]</button>
                 ${isSniper ? `<button class="unsnipe-btn" onclick="cancelSnipe(${bot.bot_id})">[ STOP ]</button>` : ''}
-              </div>
-              
-              
-                </button>
               </div>
             </div>
           `;
