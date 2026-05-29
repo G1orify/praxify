@@ -7,12 +7,10 @@
   
   <!-- Discord / Social Embed Metadata -->
   <meta property="og:title" content="CIPHER_OS">
-  <meta property="og:description" content="Advanced Tactical Voice Intelligence and Sniper Network">
+  <meta property="og:description" content="closed source intelligence for discord">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://intelhaven.xyz">
-  <meta property="og:image" content="https://intelhaven.xyz/embed.png">
   <meta name="theme-color" content="#000000">
-  <meta name="twitter:card" content="summary_large_image">
   <!-- Minecraft-like boxy font -->
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1021,11 +1019,43 @@
       container.innerHTML = '<div class="empty-state"><i class="fas fa-sync fa-spin"></i><h3>SEARCHING...</h3></div>';
       
       try {
-        const res = await fetch('/api/tracks/' + userId);
-        const data = await res.json();
+        const [tracksRes, osintRes] = await Promise.all([
+          fetch('/api/tracks/' + userId),
+          fetch('/api/osint/' + userId).catch(() => null)
+        ]);
         
+        const data = await tracksRes.json();
+        const osintData = osintRes && osintRes.ok ? await osintRes.json().catch(() => null) : null;
+        
+        let html = '';
+
+        if (osintData && osintData.success && (osintData.names.length > 0 || osintData.guilds.length > 0)) {
+          html += `
+          <div style="border: 1px solid #333; padding: 15px; margin-bottom: 20px; background: rgba(0,255,0,0.02); text-align: left;">
+            <h3 style="color: #00ff00; margin-top:0; font-family: 'Space Mono', monospace;">// OSINT DOSSIER</h3>
+            <div style="display: flex; gap: 20px; font-family: 'Space Mono', monospace; font-size: 14px; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 200px;">
+                <strong style="color: #fff;">Past Names:</strong><br>
+                <div style="color: #aaa; margin-top: 5px;">${osintData.names.map(n => `> ${escapeHTML(n)}`).join('<br>') || '> No data'}</div>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <strong style="color: #fff;">Server Memberships:</strong><br>
+                <div style="color: #aaa; margin-top: 5px;">${osintData.guilds.map(g => `> ${escapeHTML(g)}`).join('<br>') || '> No data'}</div>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <strong style="color: #fff;">Voice Activity:</strong><br>
+                <div style="color: #aaa; margin-top: 5px;">${osintData.voice.map(v => `> ${escapeHTML(v.channel)} (${v.duration}s)`).join('<br>') || '> No data'}</div>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <strong style="color: #fff;">Message History:</strong><br>
+                <div style="color: #aaa; margin-top: 5px;">> [BOT TRACKING PENDING...]</div>
+              </div>
+            </div>
+          </div>`;
+        }
+
         if (data.tracks && data.tracks.length > 0) {
-          let html = '<div class="tracks-grid">';
+          html += '<div class="tracks-grid">';
           data.tracks.forEach(track => {
             html += `
             <div class="track-card">
@@ -1056,13 +1086,16 @@
             </div>`;
           });
           html += '</div>';
+        }
+        
+        if (html !== '') {
           container.innerHTML = html;
         } else {
           container.innerHTML = `
           <div class="empty-state">
             <i class="fas fa-ghost"></i>
             <h3>NO DATA FOUND</h3>
-            <p>Target ID [${userId}] has no recordings.</p>
+            <p>Target ID [${escapeHTML(userId)}] has no data.</p>
           </div>`;
         }
       } catch (err) {
