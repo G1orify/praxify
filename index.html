@@ -541,7 +541,7 @@
       <h1>CIPHER</h1>
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('dashboard')">DASHBOARD</button>
-        <button class="tab-btn" onclick="switchTab('sniper')">SNIPER_LINK</button>
+        <button class="tab-btn" id="sniperTabBtn" onclick="switchTab('sniper')" style="display: none;">SNIPER_LINK</button>
         <button class="tab-btn" id="adminTabBtn" onclick="switchTab('admin')" style="display: none; border-color: #00ff00; color: #00ff00;">ADMIN_CONSOLE</button>
         <button class="tab-btn" onclick="logoutUser()" style="border-color: #ff3333; color: #ff3333;">LOGOUT</button>
       </div>
@@ -554,15 +554,6 @@
         <form onsubmit="searchUser(event)" class="user-form">
           <input type="text" name="userId" placeholder="INPUT DISCORD ID..." value="" autocomplete="off" required>
           <button type="submit">[ SEARCH ]</button>
-        </form>
-      </div>
-
-      <div class="search-block">
-        <h2>// BOT FLEET EXPANSION</h2>
-        <p style="margin-bottom: 15px; font-size: 0.9rem; color: #aaa;">Inject a new Discord self-bot token into the .env configuration.</p>
-        <form onsubmit="addBotToken(event, 'newBotTokenDashboard', 'addTokenBtnDashboard')" class="user-form">
-          <input type="text" id="newBotTokenDashboard" placeholder="ENTER DISCORD self-bot TOKEN..." autocomplete="off" required>
-          <button type="submit" id="addTokenBtnDashboard"><span class="btn-text">[ INJECT ]</span><div class="spinner" style="border-color: var(--bg); border-top-color: transparent;"></div></button>
         </form>
       </div>
 
@@ -601,10 +592,18 @@
       <div class="search-block">
         <h3 style="color: #00ff00; margin-bottom: 10px;">[ ADD BOT TOKEN ]</h3>
         <p style="margin-bottom: 15px; font-size: 0.9rem; color: #aaa;">Inject a new Discord bot token into the .env configuration.</p>
-        <form onsubmit="addBotToken(event)" class="user-form">
+        <form onsubmit="addBotToken(event, 'newBotToken', 'addTokenBtn')" class="user-form">
           <input type="text" id="newBotToken" placeholder="ENTER DISCORD TOKEN..." autocomplete="off" required>
           <button type="submit" id="addTokenBtn"><span class="btn-text">[ INJECT ]</span><div class="spinner"></div></button>
         </form>
+      </div>
+
+      <div class="search-block" style="margin-top: 30px;">
+        <h3 style="color: #ff3333; margin-bottom: 15px;">[ MANAGE BOT TOKENS ]</h3>
+        <p style="margin-bottom: 15px; font-size: 0.9rem; color: #aaa;">View and remove existing Discord self-bot tokens.</p>
+        <div id="tokensListContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+          <!-- Active tokens will be loaded here dynamically -->
+        </div>
       </div>
     </div>
 
@@ -700,11 +699,9 @@
       const token = localStorage.getItem('auth_token');
       if (token) {
         const payload = parseJwt(token);
-        if (payload && payload.role === 'admin') {
-          document.getElementById('adminTabBtn').style.display = 'inline-block';
-        } else {
-          document.getElementById('adminTabBtn').style.display = 'none';
-        }
+        const isAdmin = payload && payload.role === 'admin';
+        document.getElementById('adminTabBtn').style.display = isAdmin ? 'inline-block' : 'none';
+        document.getElementById('sniperTabBtn').style.display = isAdmin ? 'inline-block' : 'none';
       }
     }
 
@@ -774,6 +771,7 @@
       localStorage.removeItem('auth_token');
       document.getElementById('auth-overlay').classList.add('active');
       document.getElementById('adminTabBtn').style.display = 'none';
+      document.getElementById('sniperTabBtn').style.display = 'none';
       switchTab('dashboard');
       loadCaptcha();
       if (sniperInterval) clearInterval(sniperInterval);
@@ -800,6 +798,7 @@
         if (data.success) {
           alert("SUCCESS: " + data.message);
           document.getElementById(inputId).value = '';
+          loadAdminTokens();
         } else {
           alert("ERROR: " + data.error);
         }
@@ -812,6 +811,68 @@
       }
     }
 
+    async function loadAdminTokens() {
+      const container = document.getElementById('tokensListContainer');
+      if (!container) return;
+      container.innerHTML = '<div style="color: #aaa;">Loading tokens...</div>';
+      
+      try {
+        const res = await fetch('/api/admin/tokens');
+        const data = await res.json();
+        if (data.success && data.tokens) {
+          if (data.tokens.length === 0) {
+            container.innerHTML = '<div style="color: #ff3333;">NO TOKENS CONFIGURED</div>';
+            return;
+          }
+          
+          let html = '';
+          data.tokens.forEach((token, index) => {
+            const maskedToken = token.length > 20 
+              ? `${token.substring(0, 10)}...${token.substring(token.length - 10)}` 
+              : token;
+              
+            html += `
+              <div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; padding: 10px 15px; background: rgba(255,255,255,0.02);">
+                <div style="font-family: 'Space Mono', monospace; font-size: 0.9rem; color: #fff;">
+                  <strong>[#${index + 1}]</strong> ${escapeHTML(maskedToken)}
+                </div>
+                <button type="button" onclick="removeBotToken(${index})" style="padding: 5px 15px; font-size: 0.8rem; border-color: #ff3333; color: #ff3333; box-shadow: 2px 2px 0px #ff3333; height: auto;">
+                  [ REMOVE ]
+                </button>
+              </div>
+            `;
+          });
+          container.innerHTML = html;
+        } else {
+          container.innerHTML = `<div style="color: #ff3333;">ERROR: ${data.error || 'Failed to load tokens'}</div>`;
+        }
+      } catch (err) {
+        container.innerHTML = '<div style="color: #ff3333;">NETWORK ERROR</div>';
+      }
+    }
+
+    async function removeBotToken(index) {
+      if (!confirm(`ARE YOU SURE YOU WANT TO REMOVE BOT TOKEN #${index + 1}?`)) {
+        return;
+      }
+      
+      try {
+        const res = await fetch('/api/admin/token/remove', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ index })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("SUCCESS: " + data.message);
+          loadAdminTokens();
+        } else {
+          alert("ERROR: " + data.error);
+        }
+      } catch (err) {
+        alert("NETWORK ERROR: " + err);
+      }
+    }
 
     // Tab Switching
     let sniperInterval = null;
@@ -828,6 +889,10 @@
         sniperInterval = setInterval(fetchBots, 2000);
       } else {
         if (sniperInterval) clearInterval(sniperInterval);
+      }
+
+      if (tabId === 'admin') {
+        loadAdminTokens();
       }
     }
 
