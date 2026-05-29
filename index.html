@@ -1047,8 +1047,20 @@
                 <div style="color: #aaa; margin-top: 5px;">${osintData.voice.map(v => `> ${escapeHTML(v.channel)} (${v.duration}s)`).join('<br>') || '> No data'}</div>
               </div>
               <div style="flex: 1; min-width: 200px;">
+                <strong style="color: #fff;">Past Avatars:</strong><br>
+                <div style="margin-top: 5px; display: flex; gap: 5px; flex-wrap: wrap;">
+                  ${osintData.avatars && osintData.avatars.length > 0 
+                    ? osintData.avatars.map(a => `<img src="${a}" style="width: 40px; height: 40px; border-radius: 5px; border: 1px solid #444;">`).join('') 
+                    : '<span style="color: #aaa;">> No avatars scraped</span>'}
+                </div>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
                 <strong style="color: #fff;">Message History:</strong><br>
-                <div style="color: #aaa; margin-top: 5px;">> [BOT TRACKING PENDING...]</div>
+                <div style="color: #aaa; margin-top: 5px; max-height: 150px; overflow-y: auto;">
+                  ${osintData.messages && osintData.messages.length > 0 
+                    ? osintData.messages.map(m => `> "${escapeHTML(m)}"`).join('<br><br>') 
+                    : '> No messages scraped'}
+                </div>
               </div>
             </div>
           </div>`;
