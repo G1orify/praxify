@@ -617,6 +617,18 @@
   </div>
 
   <script>
+    function escapeHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[m];
+      });
+    }
 
     // Add interceptor to fetch calls
     const originalFetch = window.fetch;
@@ -755,17 +767,17 @@
               <div class="bot-header" style="border-color: ${statusColor}">
                 <div class="bot-name">
                   <i class="fas ${isSniper ? 'fa-crosshairs' : 'fa-robot'}" style="color: ${statusColor}"></i> 
-                  ${bot.bot_name || 'Unit-' + bot.bot_id}
+                  ${escapeHTML(bot.bot_name || 'Unit-' + bot.bot_id)}
                 </div>
                 <div class="bot-status" style="color: ${statusColor}; border-color: ${statusColor}">
-                  ${bot.state}
+                  ${escapeHTML(bot.state)}
                 </div>
               </div>
               
               <div class="snipe-log">
-                <div style="margin-bottom: 5px;"><strong>> CURRENT LOCATION:</strong> ${bot.current_vc || 'Unknown'}</div>
-                <div><strong>> STATUS LOG:</strong> ${bot.log || 'Awaiting orders...'}</div>
-                ${isSniper ? `<div style="margin-top: 5px; color: #ff3333;"><strong>> TARGET LOCKED:</strong> ${bot.target_channel_id}</div>` : ''}
+                <div style="margin-bottom: 5px;"><strong>> CURRENT LOCATION:</strong> ${escapeHTML(bot.current_vc || 'Unknown')}</div>
+                <div><strong>> STATUS LOG:</strong> ${escapeHTML(bot.log || 'Awaiting orders...')}</div>
+                ${isSniper ? `<div style="margin-top: 5px; color: #ff3333;"><strong>> TARGET LOCKED:</strong> ${escapeHTML(bot.target_channel_id)}</div>` : ''}
               </div>
 
               <div class="snipe-input-group">
@@ -1000,8 +1012,8 @@
           data.tracks.forEach(track => {
             html += `
             <div class="track-card">
-              <div class="track-title">${track.title}</div>
-              <div class="track-meta">ID: ${data.userId}</div>
+              <div class="track-title">${escapeHTML(track.title)}</div>
+              <div class="track-meta">ID: ${escapeHTML(data.userId)}</div>
 
               <div class="audio-player">
                 <button class="play-btn" onclick="togglePlay('${track.id}')">
@@ -1012,15 +1024,15 @@
                 </div>
                 <div class="time-display" id="time-${track.id}">0:00</div>
                 <audio id="audio-${track.id}" ontimeupdate="updateProgress('${track.id}')" onended="resetPlayer('${track.id}')">
-                  <source src="/recordings/${track.file}" type="audio/mpeg">
+                  <source src="/recordings/${escapeHTML(track.file)}" type="audio/mpeg">
                 </audio>
               </div>
 
               <div class="track-actions">
-                <a href="/recordings/${track.file}" download class="btn-action">
+                <a href="/recordings/${escapeHTML(track.file)}" download class="btn-action">
                   [ DL ]
                 </a>
-                <button class="btn-action" onclick="openCloneModal('${track.file}', '${track.title}')">
+                <button class="btn-action" onclick="openCloneModal('${escapeHTML(track.file)}', '${escapeHTML(track.title).replace(/'/g, "\\'")}')">
                   [ CLONE ]
                 </button>
               </div>
