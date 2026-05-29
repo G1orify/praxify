@@ -542,6 +542,7 @@
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('dashboard')">DASHBOARD</button>
         <button class="tab-btn" onclick="switchTab('sniper')">SNIPER_LINK</button>
+        <button class="tab-btn" id="adminTabBtn" onclick="switchTab('admin')" style="display: none; border-color: #00ff00; color: #00ff00;">ADMIN_CONSOLE</button>
         <button class="tab-btn" onclick="logoutUser()" style="border-color: #ff3333; color: #ff3333;">LOGOUT</button>
       </div>
     </header>
@@ -579,6 +580,23 @@
           <i class="fas fa-sync fa-spin"></i>
           <h3>ESTABLISHING UPLINK...</h3>
         </div>
+      </div>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <div id="admin-view" class="view-content">
+      <div class="search-block" style="text-align: center; margin-bottom: 30px;">
+        <h2>// ADMINISTRATOR CONTROLS //</h2>
+        <p style="margin-top: 10px; color: rgba(255,255,255,0.7);">Manage fleet configuration and authentication.</p>
+      </div>
+
+      <div class="search-block">
+        <h3 style="color: #00ff00; margin-bottom: 10px;">[ ADD BOT TOKEN ]</h3>
+        <p style="margin-bottom: 15px; font-size: 0.9rem; color: #aaa;">Inject a new Discord bot token into the .env configuration.</p>
+        <form onsubmit="addBotToken(event)" class="user-form">
+          <input type="text" id="newBotToken" placeholder="ENTER DISCORD TOKEN..." autocomplete="off" required>
+          <button type="submit" id="addTokenBtn"><span class="btn-text">[ INJECT ]</span><div class="spinner"></div></button>
+        </form>
       </div>
     </div>
 
@@ -659,6 +677,29 @@
       return response;
     };
 
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) { return null; }
+    }
+
+    function checkAdminRole() {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        const payload = parseJwt(token);
+        if (payload && payload.role === 'admin') {
+          document.getElementById('adminTabBtn').style.display = 'inline-block';
+        } else {
+          document.getElementById('adminTabBtn').style.display = 'none';
+        }
+      }
+    }
+
     let authMode = 'login';
     let currentCaptchaToken = '';
 
@@ -701,6 +742,7 @@
         if(res.ok && data.success) {
           localStorage.setItem('auth_token', data.token);
           document.getElementById('auth-overlay').classList.remove('active');
+          checkAdminRole();
         } else {
           alert(`AUTH_ERR: ${data.error}`);
           loadCaptcha();
@@ -714,6 +756,7 @@
       const token = localStorage.getItem('auth_token');
       if(token) {
         document.getElementById('auth-overlay').classList.remove('active');
+        checkAdminRole();
       } else {
         loadCaptcha();
       }
@@ -722,8 +765,36 @@
     function logoutUser() {
       localStorage.removeItem('auth_token');
       document.getElementById('auth-overlay').classList.add('active');
+      document.getElementById('adminTabBtn').style.display = 'none';
+      switchTab('dashboard');
       loadCaptcha();
       if (sniperInterval) clearInterval(sniperInterval);
+    }
+
+    async function addBotToken(e) {
+      e.preventDefault();
+      const tokenInput = document.getElementById('newBotToken').value;
+      const btn = document.getElementById('addTokenBtn');
+      btn.classList.add('loading');
+      
+      try {
+        const res = await fetch('/api/admin/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: tokenInput })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("SUCCESS: " + data.message);
+          document.getElementById('newBotToken').value = '';
+        } else {
+          alert("ERROR: " + data.error);
+        }
+      } catch (err) {
+        alert("NETWORK ERROR: " + err);
+      } finally {
+        btn.classList.remove('loading');
+      }
     }
 
 
