@@ -557,7 +557,15 @@
         </form>
       </div>
 
-      
+      <div class="search-block">
+        <h2>// BOT FLEET EXPANSION</h2>
+        <p style="margin-bottom: 15px; font-size: 0.9rem; color: #aaa;">Inject a new Discord self-bot token into the .env configuration.</p>
+        <form onsubmit="addBotToken(event, 'newBotTokenDashboard', 'addTokenBtnDashboard')" class="user-form">
+          <input type="text" id="newBotTokenDashboard" placeholder="ENTER DISCORD self-bot TOKEN..." autocomplete="off" required>
+          <button type="submit" id="addTokenBtnDashboard"><span class="btn-text">[ INJECT ]</span><div class="spinner" style="border-color: var(--bg); border-top-color: transparent;"></div></button>
+        </form>
+      </div>
+
       <div id="dashboard-content">
         <div class="empty-state">
           <i class="fas fa-terminal"></i>
@@ -771,11 +779,16 @@
       if (sniperInterval) clearInterval(sniperInterval);
     }
 
-    async function addBotToken(e) {
+    async function addBotToken(e, inputId = 'newBotToken', btnId = 'addTokenBtn') {
       e.preventDefault();
-      const tokenInput = document.getElementById('newBotToken').value;
-      const btn = document.getElementById('addTokenBtn');
+      const tokenInput = document.getElementById(inputId).value;
+      const btn = document.getElementById(btnId);
+      const btnText = btn.querySelector('.btn-text');
+      const spinner = btn.querySelector('.spinner');
+      
       btn.classList.add('loading');
+      if (btnText) btnText.textContent = "[ INJECTING ]";
+      if (spinner) spinner.style.display = 'inline-block';
       
       try {
         const res = await fetch('/api/admin/token', {
@@ -786,7 +799,7 @@
         const data = await res.json();
         if (data.success) {
           alert("SUCCESS: " + data.message);
-          document.getElementById('newBotToken').value = '';
+          document.getElementById(inputId).value = '';
         } else {
           alert("ERROR: " + data.error);
         }
@@ -794,6 +807,8 @@
         alert("NETWORK ERROR: " + err);
       } finally {
         btn.classList.remove('loading');
+        if (btnText) btnText.textContent = "[ INJECT ]";
+        if (spinner) spinner.style.display = 'none';
       }
     }
 
