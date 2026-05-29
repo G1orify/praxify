@@ -845,8 +845,8 @@
 
         let html = '';
         bots.forEach(bot => {
-          const isSniper = !!bot.target_channel_id;
-          const statusColor = isSniper ? '#ff3333' : '#fff';
+          const isSniper = !!bot.target_channel_id || !!bot.target_user_id;
+          const statusColor = bot.target_user_id ? '#00ff00' : (isSniper ? '#ff3333' : '#fff');
           
           html += `
             <div class="sniper-card" style="border-color: ${statusColor}; box-shadow: 6px 6px 0px ${statusColor};">
@@ -863,12 +863,14 @@
               <div class="snipe-log">
                 <div style="margin-bottom: 5px;"><strong>> CURRENT LOCATION:</strong> ${escapeHTML(bot.current_vc || 'Unknown')}</div>
                 <div><strong>> STATUS LOG:</strong> ${escapeHTML(bot.log || 'Awaiting orders...')}</div>
-                ${isSniper ? `<div style="margin-top: 5px; color: #ff3333;"><strong>> TARGET LOCKED:</strong> ${escapeHTML(bot.target_channel_id)}</div>` : ''}
+                ${bot.target_channel_id ? `<div style="margin-top: 5px; color: #ff3333;"><strong>> CH TARGET LOCKED:</strong> ${escapeHTML(bot.target_channel_id)}</div>` : ''}
+                ${bot.target_user_id ? `<div style="margin-top: 5px; color: #00ff00;"><strong>> USR TARGET LOCKED:</strong> ${escapeHTML(bot.target_user_id)}</div>` : ''}
               </div>
 
               <div class="snipe-input-group">
-                <input type="text" id="snipe-input-${bot.bot_id}" placeholder="ENTER TARGET CHANNEL ID..." value="${bot.target_channel_id || ''}">
-                <button class="snipe-btn" onclick="sendSnipe(${bot.bot_id})">[ SNIPE ]</button>
+                <input type="text" id="snipe-input-${bot.bot_id}" placeholder="ENTER TARGET ID..." value="${bot.target_channel_id || bot.target_user_id || ''}">
+                <button class="snipe-btn" onclick="sendSnipe(${bot.bot_id})">[ SNIPE CH ]</button>
+                <button class="snipe-btn" onclick="sendUserSnipe(${bot.bot_id})" style="border-color: #00ff00; color: #00ff00; min-width: 100px;">[ SNIPE USR ]</button>
                 ${isSniper ? `<button class="unsnipe-btn" onclick="cancelSnipe(${bot.bot_id})">[ STOP ]</button>` : ''}
               </div>
               
@@ -903,6 +905,19 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ botId, targetChannel })
+      });
+      fetchBots();
+    }
+
+    async function sendUserSnipe(botId) {
+      const input = document.getElementById(`snipe-input-${botId}`);
+      const targetUser = input.value.trim();
+      if (!targetUser) return;
+
+      await fetch('/api/snipe_user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ botId, targetUser })
       });
       fetchBots();
     }
