@@ -477,12 +477,7 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    #cloneResult {
-      margin-top: 25px;
-      padding-top: 25px;
-      border-top: 2px dashed var(--fg);
-      display: none;
-    }
+    
 
     /* Empty States */
     .empty-state {
@@ -609,45 +604,7 @@
 
   </div>
 
-  <!-- Voice Cloning Modal -->
-  <div class="modal-overlay" id="cloneModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 id="cloneTitle">CLONE_INIT</h3>
-        <button class="modal-close" onclick="closeCloneModal()">[ X ]</button>
-      </div>
-      
-      <p style="margin-bottom: 15px; font-size: 0.9rem;">
-        // INPUT TEXT FOR SYNTHESIS
-      </p>
-
-      <textarea id="cloneText" placeholder="HELLO WORLD..."></textarea>
-      
-      <button id="generateBtn" onclick="generateClone()" style="width: 100%;">
-        <span class="btn-text">[ EXECUTE ]</span>
-        <div class="spinner"></div>
-      </button>
-
-      <div id="cloneResult">
-        <p style="font-weight: bold; margin-bottom: 15px;">
-          > SYNTHESIS COMPLETE
-        </p>
-        <div class="audio-player">
-          <button class="play-btn" onclick="togglePlay('clone')">
-            <i class="fas fa-play" id="icon-clone"></i>
-          </button>
-          <div class="progress-container" onclick="seekAudio(event, 'clone')">
-            <div class="progress-bar" id="progress-clone"></div>
-          </div>
-          <div class="time-display" id="time-clone">0:00</div>
-          <audio id="audio-clone" ontimeupdate="updateProgress('clone')" onended="resetPlayer('clone')"></audio>
-        </div>
-        <a id="downloadCloneBtn" href="#" download class="btn-action" style="display: block; margin-top: 15px;">
-          [ DOWNLOAD .WAV ]
-        </a>
-      </div>
-    </div>
-  </div>
+  
 
   <script>
     function escapeHTML(str) {
@@ -954,12 +911,7 @@
                 ${isSniper ? `<button class="unsnipe-btn" onclick="cancelSnipe(${bot.bot_id})">[ STOP ]</button>` : ''}
               </div>
               
-              <div class="snipe-input-group" style="margin-top: 15px; border-top: 1px dashed ${statusColor}; padding-top: 15px;">
-                <input type="text" id="mimic-target-${bot.bot_id}" placeholder="USER ID TO CLONE..." style="flex: 0.5;">
-                <input type="text" id="mimic-text-${bot.bot_id}" placeholder="TEXT TO INJECT...">
-                <button class="snipe-btn" onclick="sendMimic(${bot.bot_id})" id="mimic-btn-${bot.bot_id}" style="min-width: 120px;">
-                  <span class="btn-text">[ MIMIC ]</span>
-                  <div class="spinner" style="border-color: #000; border-top-color: transparent;"></div>
+              
                 </button>
               </div>
             </div>
@@ -1011,46 +963,7 @@
       fetchBots();
     }
 
-    async function sendMimic(botId) {
-      const targetInput = document.getElementById(`mimic-target-${botId}`);
-      const textInput = document.getElementById(`mimic-text-${botId}`);
-      const userId = targetInput.value.trim();
-      const text = textInput.value.trim();
-      
-      if (!userId || !text) {
-        alert("INPUT REQUIRED: NEED USER ID AND TEXT");
-        return;
-      }
 
-      const btn = document.getElementById(`mimic-btn-${botId}`);
-      const btnText = btn.querySelector('.btn-text');
-      const spinner = btn.querySelector('.spinner');
-
-      btn.disabled = true;
-      btnText.textContent = "[ INJECTING ]";
-      spinner.style.display = 'inline-block';
-
-      try {
-        const res = await fetch('/api/mimic', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ botId, text, userId })
-        });
-        
-        const data = await res.json();
-        if (!res.ok || !data.success) {
-          alert(`ERR: ${data.error || 'MIMIC_FAIL'}`);
-        } else {
-          textInput.value = ''; // Clear text on success
-        }
-      } catch (e) {
-        alert("NETWORK_ERR");
-      } finally {
-        btn.disabled = false;
-        btnText.textContent = "[ MIMIC ]";
-        spinner.style.display = 'none';
-      }
-    }
 
     // Media Logic
     let currentTrackFile = '';
@@ -1110,71 +1023,7 @@
       }
     }
 
-    function openCloneModal(trackFile, title) {
-      currentTrackFile = trackFile;
-      document.getElementById('cloneTitle').textContent = `> ${title}`;
-      document.getElementById('cloneModal').classList.add('active');
-      document.getElementById('cloneText').value = '';
-      document.getElementById('cloneResult').style.display = 'none';
-      
-      if (currentAudioPlaying) {
-        currentAudioPlaying.pause();
-        const oldId = currentAudioPlaying.id.replace('audio-', '');
-        document.getElementById(`icon-${oldId}`).className = 'fas fa-play';
-        currentAudioPlaying = null;
-      }
-    }
 
-    function closeCloneModal() {
-      document.getElementById('cloneModal').classList.remove('active');
-      const cloneAudio = document.getElementById('audio-clone');
-      if (!cloneAudio.paused) {
-        cloneAudio.pause();
-      }
-    }
-
-    async function generateClone() {
-      const text = document.getElementById('cloneText').value.trim();
-      if (!text) {
-        alert("INPUT REQUIRED");
-        return;
-      }
-
-      const btn = document.getElementById('generateBtn');
-      const btnText = btn.querySelector('.btn-text');
-      const spinner = btn.querySelector('.spinner');
-
-      btn.disabled = true;
-      btnText.textContent = "[ EXECUTING... ]";
-      spinner.style.display = 'inline-block';
-      document.getElementById('cloneResult').style.display = 'none';
-
-      try {
-        const response = await fetch('/api/clone', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ trackFile: currentTrackFile, text: text })
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          const cloneAudio = document.getElementById('audio-clone');
-          cloneAudio.src = data.url;
-          document.getElementById('downloadCloneBtn').href = data.url;
-          document.getElementById('cloneResult').style.display = 'block';
-        } else {
-          alert(`ERR: ${data.error || 'FAILURE'}`);
-        }
-      } catch (err) {
-        console.error(err);
-        alert("NETWORK_ERR");
-      } finally {
-        btn.disabled = false;
-        btnText.textContent = "[ EXECUTE ]";
-        spinner.style.display = 'none';
-      }
-    }
   
     async function searchUser(e) {
       e.preventDefault();
@@ -1257,9 +1106,7 @@
                 <a href="/recordings/${escapeHTML(track.file)}" download class="btn-action">
                   [ DL ]
                 </a>
-                <button class="btn-action" onclick="openCloneModal('${escapeHTML(track.file)}', '${escapeHTML(track.title).replace(/'/g, "\\'")}')">
-                  [ CLONE ]
-                </button>
+                
               </div>
             </div>`;
           });
