@@ -158,11 +158,60 @@
 
   
 
+  <div id="payment-overlay" class="modal-overlay">
+    <div class="modal auth-box" style="max-width: 500px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);">
+      <div class="modal-header" style="justify-content: center; margin-bottom: 20px;">
+        <h3 style="color: #ff3333; text-align: center;"><i class="fas fa-lock" style="margin-right: 10px;"></i>SUBSCRIPTION REQUIRED</h3>
+      </div>
+      <div style="text-align: center; margin-bottom: 20px; color: #ccc; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.5;">
+        <p>Your access has expired or is inactive.</p>
+        <p style="color: #fff; margin-top: 10px;">Purchase a 1-month subscription to regain access to the intelligence network.</p>
+      </div>
+      
+      <div class="crypto-addresses" style="margin-bottom: 20px; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.1);">
+        <div style="margin-bottom: 15px;">
+          <span style="color: #f7931a; font-weight: bold;">BTC:</span> 
+          <span class="mono" style="font-size: 0.8rem; word-break: break-all; color: #fff;">bc1q0w8qf2gq4xa026y9shxca6enepchxwhcyqdwzk</span>
+        </div>
+        <div style="margin-bottom: 15px;">
+          <span style="color: #345d9d; font-weight: bold;">LTC:</span> 
+          <span class="mono" style="font-size: 0.8rem; word-break: break-all; color: #fff;">LRkpb1veWZdmaWdDsKrQyagetxrrjZLhVd</span>
+        </div>
+        <div>
+          <span style="color: #627eea; font-weight: bold;">ETH:</span> 
+          <span class="mono" style="font-size: 0.8rem; word-break: break-all; color: #fff;">0xbd4011c9742d73024DDa776B1e2cCc3b9Cccb107</span>
+        </div>
+      </div>
+
+      <form id="paymentForm" onsubmit="submitPayment(event)">
+        <div class="auth-input-group">
+          <select id="paymentCrypto" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); outline: none; font-family: var(--font-mono); margin-bottom: 15px;">
+            <option value="" disabled selected>SELECT CRYPTO PAID</option>
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="LTC">Litecoin (LTC)</option>
+            <option value="ETH">Ethereum (ETH)</option>
+          </select>
+        </div>
+        <div class="auth-input-group">
+          <input type="text" id="paymentTxid" placeholder="TRANSACTION ID (TXID)" required>
+        </div>
+        <button type="submit" class="auth-submit-btn" style="border: 1px solid #00ff00; color: #00ff00; background: rgba(0, 255, 0, 0.05);">
+          <span class="btn-text" id="paymentSubmitBtn">[ SUBMIT PAYMENT ]</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+      <div style="text-align: center; margin-top: 15px;">
+        <button onclick="logoutUser()" style="background: transparent; border: none; color: #aaa; text-decoration: underline; cursor: pointer; font-family: var(--font-mono); font-size: 0.8rem;">Log Out</button>
+      </div>
+    </div>
+  </div>
+
   <script src="js/utils.js?v=3"></script>
   <script src="js/auth.js?v=3"></script>
   <script src="js/dashboard.js?v=3"></script>
   <script src="js/sniper.js?v=3"></script>
   <script src="js/admin.js?v=3"></script>
+  <script src="js/payment.js?v=1"></script>
   <script src="js/app.js?v=3"></script>
 </body>
 </html>
