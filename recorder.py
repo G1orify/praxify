@@ -24,16 +24,45 @@ class PerUserOpusToMP3Sink(voice_recv.AudioSink):
         self.filepath = filepath
         self._process = None
         self._stdin = None
-        self._start_ffmpeg()
+        self._ffmpeg_available = self._check_ffmpeg()
+        if self._ffmpeg_available:
+            self._start_ffmpeg()
+        else:
+            logger.error("FFmpeg not found! Install FFmpeg and add to PATH, or set FFMPEG_PATH environment variable")
+    
+    def _check_ffmpeg(self):
+        """Check if FFmpeg is available."""
+        ffmpeg_path = os.getenv("FFMPEG_PATH", "ffmpeg")
+        try:
+            result = subprocess.run(
+                [ffmpeg_path, '-version'],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            return result.returncode == 0
+        except (FileNotFoundError, subprocess.SubprocessError):
+            return False
+    
+    def _get_ffmpeg_path(self):
+        """Get FFmpeg executable path."""
+        custom_path = os.getenv("FFMPEG_PATH")
+        if custom_path and os.path.exists(custom_path):
+            return custom_path
+        return "ffmpeg"
     
     def _start_ffmpeg(self):
         """Start FFmpeg process that reads raw PCM from stdin and outputs MP3."""
+        if not self._ffmpeg_available:
+            logger.error("Cannot start FFmpeg - executable not found")
+            return
+        
         audio_bitrate = os.getenv("AUDIO_BITRATE", "192") + "k"
+        ffmpeg_cmd = self._get_ffmpeg_path()
         args = [
-            'ffmpeg',
+            ffmpeg_cmd,
             '-hide_banner',
             '-loglevel', 'error',
-            '-f', 's16le',   # Input as PCM
+            '-f', 's16le',
             '-ar', '48000',
             '-ac', '2',
             '-i', 'pipe:0',
@@ -44,27 +73,37 @@ class PerUserOpusToMP3Sink(voice_recv.AudioSink):
             str(self.filepath)
         ]
         
-        self._process = subprocess.Popen(
-            args,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
-        self._stdin = self._process.stdin
+        try:
+            self._process = subprocess.Popen(
+                args,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            self._stdin = self._process.stdin
+        except FileNotFoundError as e:
+            logger.error(f"FFmpeg not found at {ffmpeg_cmd}: {e}")
+            self._ffmpeg_available = False
+        except Exception as e:
+            logger.error(f"Failed to start FFmpeg: {e}")
+            self._ffmpeg_available = False
     
     def wants_opus(self) -> bool:
         return False
     
     def write(self, user, data):
         """Write PCM data to FFmpeg."""
-        if self._stdin and not self._stdin.closed:
-            try:
-                pcm = getattr(data, 'pcm', data) if not isinstance(data, (bytes, bytearray)) else data
-                if pcm:
-                    self._stdin.write(pcm)
-                    self._stdin.flush()
-            except Exception as e:
-                logger.error(f"Error writing PCM data: {e}")
+        if not self._ffmpeg_available or not self._stdin or self._stdin.closed:
+            logger.debug("FFmpeg not available, skipping audio write")
+            return
+        
+        try:
+            pcm = getattr(data, 'pcm', data) if not isinstance(data, (bytes, bytearray)) else data
+            if pcm:
+                self._stdin.write(pcm)
+                self._stdin.flush()
+        except Exception as e:
+            logger.error(f"Error writing PCM data: {e}")
     
     def cleanup(self):
         """Close FFmpeg process without blocking the event loop."""
@@ -82,6 +121,9 @@ class PerUserOpusToMP3Sink(voice_recv.AudioSink):
                 except Exception:
                     proc.kill()
             threading.Thread(target=wait_and_kill, args=(self._process,), daemon=True).start()
+        
+        if not self._ffmpeg_available:
+            logger.warning("FFmpeg was not available - no process to cleanup")
 
 class MultiUserSink(voice_recv.AudioSink):
     def __init__(self, base_dir: Path, guild_name: str, channel_name: str, db_path: Path):
