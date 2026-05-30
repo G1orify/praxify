@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Recorder | Pro Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Pro Design Tokens */
+        :root {
+            --bg-body: #050505;
+            --bg-card: #0c0c0c;
+            --bg-surface: #141414;
+            --accent: #ffffff;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --border: #222222;
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding: var(--space-lg); min-height: 100vh; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        /* Layout components */
+        header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-lg); border-bottom: 1px solid var(--border); padding-bottom: var(--space-md); }
+        .tabs { display: flex; gap: var(--space-md); }
+        .tab-btn { background: transparent; color: var(--text-dim); border: none; font-size: 1.2rem; font-weight: 500; cursor: pointer; padding: 10px 0; border-bottom: 2px solid transparent; transition: 0.3s; }
+        .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+
+        .card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: var(--space-lg); box-shadow: var(--shadow); margin-bottom: var(--space-lg); }
+        
+        /* UI Elements */
+        input { background: var(--bg-surface); border: 1px solid var(--border); color: white; padding: 14px 20px; border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: border 0.2s; }
+        input:focus { border-color: #555; }
+        button.btn-primary { background: var(--accent); color: #000; border: none; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: transform 0.1s, opacity 0.2s; }
+        button.btn-primary:active { transform: scale(0.98); }
+        button.btn-danger { background: #ff4444; color: white; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; }
+
+        /* Dashboard View */
+        #dashboardView { display: block; }
+        .search-wrapper { display: flex; gap: var(--space-sm); align-items: center; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; padding: var(--space-md); border-bottom: 1px solid var(--border); }
+        td { padding: var(--space-md); border-bottom: 1px solid var(--border); }
+        tr:hover { background: rgba(255,255,255,0.02); }
+
+        /* Enhanced Player */
+        .audio-container { display: flex; align-items: center; gap: var(--space-md); background: var(--bg-surface); padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); width: 300px; justify-content: space-between; }
+        .play-btn { width: 28px; height: 28px; background: white; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; color: black; flex-shrink: 0; }
+        .progress-bar { -webkit-appearance: none; appearance: none; flex: 1; height: 4px; background: #333; border-radius: 2px; outline: none; }
+        .progress-bar::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 10px; height: 10px; border-radius: 50%; background: #00e676; cursor: pointer; }
+        .time { font-family: monospace; font-size: 0.75rem; color: var(--text-dim); min-width: 70px; text-align: right; }
+        audio { display: none; }
+
+
+        /* Control Panel View */
+        #controlView { display: none; }
+        .fleet-panel { background: rgba(255, 68, 68, 0.05); border: 1px solid rgba(255, 68, 68, 0.2); border-radius: var(--radius-lg); padding: var(--space-md); margin-bottom: var(--space-lg); display: flex; justify-content: space-between; align-items: center; }
+        .fleet-panel h3 { margin: 0; color: #ff4444; }
+        .fleet-actions { display: flex; gap: var(--space-sm); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: white; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+        .bot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--space-lg); }
+        .bot-card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-md); }
+        .bot-header { display: flex; justify-content: space-between; align-items: center; }
+        .bot-name { font-weight: 600; font-size: 1.1rem; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .badge.hopping { background: rgba(0, 200, 83, 0.1); color: #00e676; border: 1px solid rgba(0, 200, 83, 0.2); }
+        .badge.sniper { background: rgba(255, 68, 68, 0.1); color: #ff4444; border: 1px solid rgba(255, 68, 68, 0.2); }
+        .badge.disabled { background: rgba(136, 136, 136, 0.1); color: #888; border: 1px solid rgba(136, 136, 136, 0.2); }
+        
+        .bot-detail { display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .bot-detail span:first-child { color: var(--text-dim); }
+        
+        /* Avatars Preview */
+        .vc-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; overflow: hidden; border: 2px solid var(--bg-card); margin-left: -10px; }
+        .avatar:first-child { margin-left: 0; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Advanced Controls */
+        .adv-controls { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); margin-top: auto; padding-top: var(--space-md); border-top: 1px solid var(--border); }
+        select { background: var(--bg-surface); border: 1px solid var(--border); color: white; padding: 10px; border-radius: var(--radius-md); font-size: 0.9rem; outline: none; }
+        .sniper-controls { display: flex; gap: var(--space-sm); grid-column: span 2; }
+        .sniper-input { flex: 1; padding: 10px; font-size: 0.9rem; }
+        .sniper-btn { padding: 10px 15px; }
+
+        .empty-state { text-align: center; color: var(--text-dim); padding: 40px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('dashboard')">Recordings</button>
+                <button class="tab-btn" onclick="switchTab('control')">Control Panel</button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboardView">
+            <div class="card">
+                <div class="search-wrapper">
+                    <input type="text" id="userId" placeholder="Enter User ID to find recordings...">
+                    <button class="btn-primary" onclick="doSearch()">Search</button>
+                </div>
+            </div>
+            <div class="card" id="resultsCard" style="display: none;">
+                <table>
+                    <thead><tr><th>Channel</th><th>Start</th><th>Duration</th><th></th></tr></thead>
+                    <tbody id="resultsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CONTROL PANEL VIEW -->
+        <div id="controlView">
+            <div class="fleet-panel">
+                <div>
+                    <h3>Fleet Command</h3>
+                    <span style="color: var(--text-dim); font-size: 0.85rem;" id="fleetStatusText">Status: Active</span>
+                </div>
+                <div class="fleet-actions">
+                    <button class="btn-outline" onclick="setFleet(false, false)">▶ Resume All</button>
+                    <button class="btn-outline" onclick="setFleet(true, false)">🧊 Freeze All</button>
+                    <button class="btn-danger" onclick="setFleet(false, true)">🚨 Panic Disconnect</button>
+                </div>
+            </div>
+
+            <div class="bot-grid" id="botGrid">
+                <!-- Bot Cards injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Tab Logic ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('dashboardView').style.display = tabId === 'dashboard' ? 'block' : 'none';
+            document.getElementById('controlView').style.display = tabId === 'control' ? 'block' : 'none';
+        }
+
+        // --- Dashboard Logic ---
+        async function doSearch() {
+            const uid = document.getElementById('userId').value;
+            if(!uid) return;
+            
+            const res = await fetch('/api/search/' + uid);
+            const data = await res.json();
+            
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+            
+            if(data.recordings.length > 0) {
+                data.recordings.forEach(rec => {
+                    const startTime = rec.start_time ? rec.start_time : "Unknown";
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight: 500;">${rec.channel}</td>
+                            <td style="color: var(--text-dim);">${startTime}</td>
+                            <td>${rec.duration}s</td>
+                            <td>
+                                <div class="audio-container">
+                                    <button class="play-btn" onclick="toggleAudio(this)">▶</button>
+                                    <input type="range" class="progress-bar" value="0" max="100" oninput="seekAudio(this)">
+                                    <span class="time">0:00 / 0:00</span>
+                                    <audio src="${rec.url}" ontimeupdate="updateTime(this)" onloadedmetadata="setupAudio(this)"></audio>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('resultsCard').style.display = 'block';
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No recordings found for this user.</td></tr>';
+                document.getElementById('resultsCard').style.display = 'block';
+            }
+        }
+
+        function toggleAudio(btn) {
+            const audio = btn.nextElementSibling.nextElementSibling.nextElementSibling;
+            if(audio.paused) { audio.play(); btn.innerText = '⏸'; }
+            else { audio.pause(); btn.innerText = '▶'; }
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function setupAudio(audio) {
+            const timeSpan = audio.previousElementSibling;
+            const progressBar = audio.previousElementSibling.previousElementSibling;
+            timeSpan.innerText = `0:00 / ${formatTime(audio.duration)}`;
+            progressBar.max = audio.duration;
+        }
+
+        function updateTime(audio) {
+            const timeSpan = audio.previousElementSibling;
+            const progressBar = audio.previousElementSibling.previousElementSibling;
+            timeSpan.innerText = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+            progressBar.value = audio.currentTime;
+        }
+        
+        function seekAudio(slider) {
+            const audio = slider.nextElementSibling.nextElementSibling;
+            audio.currentTime = slider.value;
+        }
+
+        // --- Control Panel Logic ---
+        async function fetchStatus() {
+            if(document.getElementById('controlView').style.display === 'none') return;
+            
+            const res = await fetch('/api/status');
+            const data = await res.json();
+            
+            // Update Fleet Status
+            if(data.fleet) {
+                const fText = document.getElementById('fleetStatusText');
+                if(data.fleet.panic_disconnect) fText.innerText = 'Status: 🚨 PANIC MODE';
+                else if(data.fleet.freeze_all) fText.innerText = 'Status: 🧊 FROZEN';
+                else fText.innerText = 'Status: Active';
+            }
+
+            const grid = document.getElementById('botGrid');
+            grid.innerHTML = '';
+            
+            data.bots.forEach(bot => {
+                const isSniper = bot.target_channel_id !== null;
+                const isDisabled = bot.disabled;
+                let badgeClass = isSniper ? 'sniper' : 'hopping';
+                if(isDisabled) badgeClass = 'disabled';
+                
+                let controlsHtml = '';
+                if(isDisabled) {
+                    controlsHtml = `
+                        <div class="sniper-controls">
+                            <button class="btn-primary" style="width: 100%; background: #00e676; color: black;" onclick="togglePower(${bot.bot_id}, false)">⏻ Turn ON</button>
+                        </div>
+                    `;
+                } else if(isSniper) {
+                    controlsHtml = `
+                        <div class="sniper-controls">
+                            <button class="btn-danger" style="width: 100%" onclick="stopTarget(${bot.bot_id})">🛑 Stop Targeting</button>
+                        </div>
+                    `;
+                } else {
+                    controlsHtml = `
+                        <div class="sniper-controls">
+                            <input type="text" id="target_${bot.bot_id}" class="sniper-input" placeholder="VC Channel ID...">
+                            <button class="btn-primary sniper-btn" onclick="setTarget(${bot.bot_id})">Snipe</button>
+                        </div>
+                    `;
+                }
+
+                // Parse Members
+                let membersHtml = '';
+                try {
+                    const members = JSON.parse(bot.vc_members || "[]");
+                    if(members.length > 0) {
+                        membersHtml = '<div class="vc-preview">';
+                        members.forEach(m => {
+                            if(m.avatar) {
+                                membersHtml += `<div class="avatar" title="${m.name}"><img src="${m.avatar}"></div>`;
+                            } else {
+                                membersHtml += `<div class="avatar" title="${m.name}">${m.name.charAt(0).toUpperCase()}</div>`;
+                            }
+                        });
+                        membersHtml += '</div>';
+                    }
+                } catch(e) {}
+
+                grid.innerHTML += `
+                    <div class="bot-card">
+                        <div class="bot-header">
+                            <span class="bot-name">${bot.bot_name || 'Bot Booting...'}</span>
+                            <span class="badge ${badgeClass}">${bot.state}</span>
+                        </div>
+                        <div class="bot-detail"><span>Current VC:</span> <span>${bot.current_vc || 'None'}</span></div>
+                        ${membersHtml}
+                        <div class="bot-detail" style="margin-top:8px;"><span>Log:</span> <span style="text-align: right; max-width: 70%;">${bot.log || '...'}</span></div>
+                        
+                        <div class="adv-controls">
+                            <select onchange="setDisguise(${bot.bot_id}, this.value)" ${isDisabled ? 'disabled' : ''}>
+                                <option value="Auto" ${!bot.override_presence ? 'selected' : ''}>🤖 Auto Disguise</option>
+                                <option value="Spotify" ${bot.override_presence==='Spotify' ? 'selected' : ''}>🎵 Spotify</option>
+                                <option value="Cyberpunk 2077" ${bot.override_presence==='Cyberpunk 2077' ? 'selected' : ''}>🎮 Cyberpunk 2077</option>
+                                <option value="Minecraft" ${bot.override_presence==='Minecraft' ? 'selected' : ''}>🟩 Minecraft</option>
+                            </select>
+                            <div style="display:flex; gap: 8px;">
+                                <button class="btn-outline" style="flex:1; padding: 10px; border-color: #444;" onclick="kickBot(${bot.bot_id})" ${isDisabled ? 'disabled' : ''}>👢 Kick</button>
+                                <button class="btn-outline" style="flex:1; padding: 10px; border-color: #444; color: #ff4444;" onclick="togglePower(${bot.bot_id}, true)" ${isDisabled ? 'disabled' : ''}>⏻ Off</button>
+                            </div>
+                            ${controlsHtml}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function togglePower(botId, disabled) {
+            await fetch('/api/power/' + botId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ disabled: disabled })
+            });
+            fetchStatus();
+        }
+
+        async function setTarget(botId) {
+            const input = document.getElementById('target_' + botId);
+            if(!input || !input.value) return;
+            await fetch('/api/target/' + botId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ channel_id: input.value })
+            });
+            fetchStatus();
+        }
+
+        async function stopTarget(botId) {
+            await fetch('/api/stop_target/' + botId, { method: 'POST' });
+            fetchStatus();
+        }
+
+        async function kickBot(botId) {
+            await fetch('/api/kick/' + botId, { method: 'POST' });
+            fetchStatus();
+        }
+
+        async function setDisguise(botId, val) {
+            await fetch('/api/disguise/' + botId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ disguise: val })
+            });
+            fetchStatus();
+        }
+
+        async function setFleet(freeze, panic) {
+            await fetch('/api/fleet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ freeze: freeze, panic: panic })
+            });
+            fetchStatus();
+        }
+
+        // Poll status every 2 seconds
+        setInterval(fetchStatus, 2000);
+        fetchStatus(); // Initial fetch
+    </script>
+</body>
+</html>

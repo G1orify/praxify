@@ -1,0 +1,47 @@
+# Python Virtual Environments
+venv/
+venv_win/
+__pycache__/
+*.pyc
+
+# Node Modules
+node_modules/
+frontend/node_modules/
+website/node_modules/
+npm-debug.log*
+
+# Build outputs
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/.cache/
+
+# Database & Recordings
+recordings/*.db
+recordings/*.db-shm
+recordings/*.db-wal
+recordings/*/*.mp3
+recordings/*/*.wav
+website/public/clones/*.wav
+website/public/clones/*.mp3
+
+# Secret Configurations
+.env
+.env.local
+.env.*
+
+# Logs and temporary files
+*.log
+*.tmp
+*.wav
+dummy.wav
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

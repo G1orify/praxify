@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cipher | OS</title>
+  <!-- Minecraft-like boxy font -->
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #000000;
+      --fg: #ffffff;
+      --border-width: 3px;
+      --box-shadow: 6px 6px 0px var(--fg);
+      --box-shadow-hover: 2px 2px 0px var(--fg);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Mono', monospace;
+      background-color: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      text-transform: uppercase;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-family: 'VT323', monospace;
+      font-size: 6rem;
+      letter-spacing: 5px;
+      text-shadow: var(--box-shadow);
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .tab-btn {
+      background: var(--bg);
+      color: var(--fg);
+      border: var(--border-width) solid var(--fg);
+      padding: 10px 40px;
+      font-family: 'Space Mono', monospace;
+      font-weight: bold;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px var(--fg);
+      transition: all 0.1s;
+    }
+    .tab-btn:hover {
+      background: var(--fg);
+      color: var(--bg);
+    }
+    .tab-btn.active {
+      background: var(--fg);
+      color: var(--bg);
+      box-shadow: 0px 0px 0px var(--fg);
+      transform: translate(4px, 4px);
+    }
+
+    .view-content {
+      display: none;
+    }
+    .view-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Search Block */
+    .search-block {
+      background: var(--bg);
+      border: var(--border-width) solid var(--fg);
+      padding: 30px;
+      margin-bottom: 50px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .search-block h2 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      border-bottom: var(--border-width) solid var(--fg);
+      padding-bottom: 10px;
+      display: inline-block;
+    }
+
+    .user-form {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      min-width: 250px;
+      background: var(--bg);
+      color: var(--fg);
+      border: var(--border-width) solid var(--fg);
+      padding: 15px 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: bold;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    input[type="text"]:focus {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    input[type="text"]::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    input[type="text"]:focus::placeholder {
+      color: rgba(0,0,0,0.5);
+    }
+
+    button {
+      background: var(--bg);
+      color: var(--fg);
+      border: var(--border-width) solid var(--fg);
+      padding: 15px 30px;
+      font-family: 'Space Mono', monospace;
+      font-weight: bold;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px var(--fg);
+      transition: all 0.1s;
+      text-transform: uppercase;
+    }
+
+    button:hover {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    button:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0px 0px 0px var(--fg);
+    }
+
+    /* Tracks Grid */
+    .tracks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+    }
+
+    .track-card {
+      background: var(--bg);
+      border: var(--border-width) solid var(--fg);
+      padding: 20px;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+    
+    .track-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .track-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-bottom: 2px dashed var(--fg);
+      padding-bottom: 10px;
+    }
+
+    .track-meta {
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Audio Player */
+    .audio-player {
+      border: 2px solid var(--fg);
+      padding: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .play-btn {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 0px var(--fg);
+    }
+    .play-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px var(--fg);
+    }
+
+    .progress-container {
+      flex: 1;
+      height: 20px;
+      border: 2px solid var(--fg);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--fg);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .time-display {
+      font-size: 0.9rem;
+      font-weight: bold;
+      min-width: 50px;
+      text-align: right;
+    }
+
+    /* Actions */
+    .track-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: auto;
+    }
+
+    .btn-action {
+      flex: 1;
+      background: var(--bg);
+      color: var(--fg);
+      border: 2px solid var(--fg);
+      padding: 10px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      box-shadow: 2px 2px 0px var(--fg);
+      transition: all 0.1s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-action:hover {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    .btn-action:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px var(--fg);
+    }
+
+    /* Sniper Cards */
+    .sniper-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    
+    .sniper-card {
+      background: var(--bg);
+      border: var(--border-width) solid var(--fg);
+      padding: 25px;
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed var(--fg);
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .bot-name {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bot-status {
+      font-size: 0.9rem;
+      padding: 5px 10px;
+      border: 1px solid var(--fg);
+    }
+
+    .snipe-log {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      min-height: 80px;
+      border-left: 4px solid var(--fg);
+    }
+
+    .snipe-input-group {
+      display: flex;
+      gap: 10px;
+    }
+    .snipe-input-group input {
+      flex: 1;
+      padding: 10px;
+      font-size: 1rem;
+    }
+    .snipe-btn {
+      background: #fff;
+      color: #000;
+      padding: 10px 20px;
+      font-size: 1rem;
+    }
+    .unsnipe-btn {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-color: #ff3333;
+      color: #ff3333;
+    }
+    .unsnipe-btn:hover {
+      background: #ff3333;
+      color: #fff;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--bg);
+      border: var(--border-width) solid var(--fg);
+      box-shadow: 10px 10px 0px var(--fg);
+      width: 100%;
+      max-width: 600px;
+      padding: 30px;
+      transform: scale(0.9);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: var(--border-width) solid var(--fg);
+      padding-bottom: 15px;
+    }
+
+    .modal-header h3 {
+      font-size: 1.5rem;
+    }
+
+    .modal-close {
+      box-shadow: none;
+      border: none;
+      padding: 5px;
+    }
+    .modal-close:active { transform: none; }
+
+    textarea {
+      width: 100%;
+      background: var(--bg);
+      border: var(--border-width) solid var(--fg);
+      color: var(--fg);
+      padding: 15px;
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      font-weight: bold;
+      min-height: 150px;
+      resize: vertical;
+      margin-bottom: 20px;
+      outline: none;
+    }
+
+    textarea:focus {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      border: 2px solid var(--bg);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: none;
+      margin-left: 10px;
+    }
+    
+    button:hover .spinner {
+      border: 2px solid var(--fg);
+      border-top-color: transparent;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #cloneResult {
+      margin-top: 25px;
+      padding-top: 25px;
+      border-top: 2px dashed var(--fg);
+      display: none;
+    }
+
+    /* Empty States */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      border: var(--border-width) dashed var(--fg);
+    }
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    .empty-state h3 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    
+    /* Glitch effect for Sniper Title */
+    .glitch {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>CIPHER</h1>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('dashboard')">DASHBOARD</button>
+        <button class="tab-btn" onclick="switchTab('sniper')">SNIPER_LINK</button>
+      </div>
+    </header>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboard-view" class="view-content active">
+      <div class="search-block">
+        <h2>// TARGET ACQUISITION</h2>
+        <form action="/user" method="POST" class="user-form">
+          <input type="text" name="userId" placeholder="INPUT DISCORD ID..." value="<%= userId || '' %>" autocomplete="off" required>
+          <button type="submit">[ SEARCH ]</button>
+        </form>
+      </div>
+
+      <% if (typeof tracks !== 'undefined' && tracks && tracks.length > 0) { %>
+        <div class="tracks-grid">
+          <% tracks.forEach((track) => { %>
+            <div class="track-card">
+              <div class="track-title"><%= track.title %></div>
+              <div class="track-meta">ID: <%= userId %></div>
+
+              <div class="audio-player">
+                <button class="play-btn" onclick="togglePlay('<%= track.id %>')">
+                  <i class="fas fa-play" id="icon-<%= track.id %>"></i>
+                </button>
+                <div class="progress-container" onclick="seekAudio(event, '<%= track.id %>')">
+                  <div class="progress-bar" id="progress-<%= track.id %>"></div>
+                </div>
+                <div class="time-display" id="time-<%= track.id %>">0:00</div>
+                <audio id="audio-<%= track.id %>" ontimeupdate="updateProgress('<%= track.id %>')" onended="resetPlayer('<%= track.id %>')">
+                  <source src="/recordings/<%= track.file %>" type="audio/mpeg">
+                </audio>
+              </div>
+
+              <div class="track-actions">
+                <a href="/recordings/<%= track.file %>" download class="btn-action">
+                  [ DL ]
+                </a>
+                <button class="btn-action" onclick="openCloneModal('<%= track.file %>', '<%= track.title %>')">
+                  [ CLONE ]
+                </button>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else if (typeof userId !== 'undefined' && userId) { %>
+        <div class="empty-state">
+          <i class="fas fa-ghost"></i>
+          <h3>NO DATA FOUND</h3>
+          <p>Target ID [<%= userId %>] has no recordings.</p>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <i class="fas fa-terminal"></i>
+          <h3>AWAITING INPUT</h3>
+          <p>Enter a Target ID to access encrypted voice data.</p>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- SNIPER VIEW -->
+    <div id="sniper-view" class="view-content">
+      <div class="search-block" style="text-align: center; margin-bottom: 30px;">
+        <h2>// ACTIVE FLEET SURVEILLANCE //</h2>
+        <p style="margin-top: 10px; color: rgba(255,255,255,0.7);">Monitor and override bot operations in real-time.</p>
+      </div>
+
+      <div class="sniper-grid" id="sniper-grid">
+        <div class="empty-state">
+          <i class="fas fa-sync fa-spin"></i>
+          <h3>ESTABLISHING UPLINK...</h3>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Voice Cloning Modal -->
+  <div class="modal-overlay" id="cloneModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="cloneTitle">CLONE_INIT</h3>
+        <button class="modal-close" onclick="closeCloneModal()">[ X ]</button>
+      </div>
+      
+      <p style="margin-bottom: 15px; font-size: 0.9rem;">
+        // INPUT TEXT FOR SYNTHESIS
+      </p>
+
+      <textarea id="cloneText" placeholder="HELLO WORLD..."></textarea>
+      
+      <button id="generateBtn" onclick="generateClone()" style="width: 100%;">
+        <span class="btn-text">[ EXECUTE ]</span>
+        <div class="spinner"></div>
+      </button>
+
+      <div id="cloneResult">
+        <p style="font-weight: bold; margin-bottom: 15px;">
+          > SYNTHESIS COMPLETE
+        </p>
+        <div class="audio-player">
+          <button class="play-btn" onclick="togglePlay('clone')">
+            <i class="fas fa-play" id="icon-clone"></i>
+          </button>
+          <div class="progress-container" onclick="seekAudio(event, 'clone')">
+            <div class="progress-bar" id="progress-clone"></div>
+          </div>
+          <div class="time-display" id="time-clone">0:00</div>
+          <audio id="audio-clone" ontimeupdate="updateProgress('clone')" onended="resetPlayer('clone')"></audio>
+        </div>
+        <a id="downloadCloneBtn" href="#" download class="btn-action" style="display: block; margin-top: 15px;">
+          [ DOWNLOAD .WAV ]
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab Switching
+    let sniperInterval = null;
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.view-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(`${tabId}-view`).classList.add('active');
+      event.target.classList.add('active');
+
+      if (tabId === 'sniper') {
+        fetchBots();
+        sniperInterval = setInterval(fetchBots, 2000);
+      } else {
+        if (sniperInterval) clearInterval(sniperInterval);
+      }
+    }
+
+    // Sniper Logic
+    async function fetchBots() {
+      try {
+        const res = await fetch('/api/bots');
+        const bots = await res.json();
+        
+        const grid = document.getElementById('sniper-grid');
+        if (!bots || bots.length === 0) {
+          grid.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-satellite-dish"></i>
+              <h3>NO BOTS ONLINE</h3>
+            </div>`;
+          return;
+        }
+
+        let html = '';
+        bots.forEach(bot => {
+          const isSniper = !!bot.target_channel_id;
+          const statusColor = isSniper ? '#ff3333' : '#fff';
+          
+          html += `
+            <div class="sniper-card" style="border-color: ${statusColor}; box-shadow: 6px 6px 0px ${statusColor};">
+              <div class="bot-header" style="border-color: ${statusColor}">
+                <div class="bot-name">
+                  <i class="fas ${isSniper ? 'fa-crosshairs' : 'fa-robot'}" style="color: ${statusColor}"></i> 
+                  ${bot.bot_name || 'Unit-' + bot.bot_id}
+                </div>
+                <div class="bot-status" style="color: ${statusColor}; border-color: ${statusColor}">
+                  ${bot.state}
+                </div>
+              </div>
+              
+              <div class="snipe-log">
+                <div style="margin-bottom: 5px;"><strong>> CURRENT LOCATION:</strong> ${bot.current_vc || 'Unknown'}</div>
+                <div><strong>> STATUS LOG:</strong> ${bot.log || 'Awaiting orders...'}</div>
+                ${isSniper ? `<div style="margin-top: 5px; color: #ff3333;"><strong>> TARGET LOCKED:</strong> ${bot.target_channel_id}</div>` : ''}
+              </div>
+
+              <div class="snipe-input-group">
+                <input type="text" id="snipe-input-${bot.bot_id}" placeholder="ENTER TARGET CHANNEL ID..." value="${bot.target_channel_id || ''}">
+                <button class="snipe-btn" onclick="sendSnipe(${bot.bot_id})">[ SNIPE ]</button>
+                ${isSniper ? `<button class="unsnipe-btn" onclick="cancelSnipe(${bot.bot_id})">[ STOP ]</button>` : ''}
+              </div>
+              
+              <div class="snipe-input-group" style="margin-top: 15px; border-top: 1px dashed ${statusColor}; padding-top: 15px;">
+                <input type="text" id="mimic-target-${bot.bot_id}" placeholder="USER ID TO CLONE..." style="flex: 0.5;">
+                <input type="text" id="mimic-text-${bot.bot_id}" placeholder="TEXT TO INJECT...">
+                <button class="snipe-btn" onclick="sendMimic(${bot.bot_id})" id="mimic-btn-${bot.bot_id}" style="min-width: 120px;">
+                  <span class="btn-text">[ MIMIC ]</span>
+                  <div class="spinner" style="border-color: #000; border-top-color: transparent;"></div>
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        
+        // Only update if focused to prevent input wiping
+        if (document.activeElement.tagName !== "INPUT") {
+          grid.innerHTML = html;
+        }
+
+      } catch (e) {
+        console.error("Failed to fetch bots", e);
+      }
+    }
+
+    async function sendSnipe(botId) {
+      const input = document.getElementById(`snipe-input-${botId}`);
+      const targetChannel = input.value.trim();
+      if (!targetChannel) return;
+
+      await fetch('/api/snipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ botId, targetChannel })
+      });
+      fetchBots();
+    }
+
+    async function cancelSnipe(botId) {
+      await fetch('/api/unsnipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ botId })
+      });
+      fetchBots();
+    }
+
+    async function sendMimic(botId) {
+      const targetInput = document.getElementById(`mimic-target-${botId}`);
+      const textInput = document.getElementById(`mimic-text-${botId}`);
+      const userId = targetInput.value.trim();
+      const text = textInput.value.trim();
+      
+      if (!userId || !text) {
+        alert("INPUT REQUIRED: NEED USER ID AND TEXT");
+        return;
+      }
+
+      const btn = document.getElementById(`mimic-btn-${botId}`);
+      const btnText = btn.querySelector('.btn-text');
+      const spinner = btn.querySelector('.spinner');
+
+      btn.disabled = true;
+      btnText.textContent = "[ INJECTING ]";
+      spinner.style.display = 'inline-block';
+
+      try {
+        const res = await fetch('/api/mimic', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ botId, text, userId })
+        });
+        
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          alert(`ERR: ${data.error || 'MIMIC_FAIL'}`);
+        } else {
+          textInput.value = ''; // Clear text on success
+        }
+      } catch (e) {
+        alert("NETWORK_ERR");
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = "[ MIMIC ]";
+        spinner.style.display = 'none';
+      }
+    }
+
+    // Media Logic
+    let currentTrackFile = '';
+    let currentAudioPlaying = null;
+
+    function togglePlay(id) {
+      const audio = document.getElementById(`audio-${id}`);
+      const icon = document.getElementById(`icon-${id}`);
+
+      if (currentAudioPlaying && currentAudioPlaying !== audio) {
+        currentAudioPlaying.pause();
+        const oldId = currentAudioPlaying.id.replace('audio-', '');
+        document.getElementById(`icon-${oldId}`).className = 'fas fa-play';
+      }
+
+      if (audio.paused) {
+        audio.play();
+        icon.className = 'fas fa-pause';
+        currentAudioPlaying = audio;
+      } else {
+        audio.pause();
+        icon.className = 'fas fa-play';
+        currentAudioPlaying = null;
+      }
+    }
+
+    function updateProgress(id) {
+      const audio = document.getElementById(`audio-${id}`);
+      const progress = document.getElementById(`progress-${id}`);
+      const timeDisplay = document.getElementById(`time-${id}`);
+      
+      if (audio.duration) {
+        const percent = (audio.currentTime / audio.duration) * 100;
+        progress.style.width = `${percent}%`;
+        
+        const currentMins = Math.floor(audio.currentTime / 60);
+        const currentSecs = Math.floor(audio.currentTime % 60).toString().padStart(2, '0');
+        timeDisplay.textContent = `${currentMins}:${currentSecs}`;
+      }
+    }
+
+    function seekAudio(e, id) {
+      const audio = document.getElementById(`audio-${id}`);
+      const container = e.currentTarget;
+      const rect = container.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      if (audio.duration) {
+        audio.currentTime = percent * audio.duration;
+      }
+    }
+
+    function resetPlayer(id) {
+      const icon = document.getElementById(`icon-${id}`);
+      icon.className = 'fas fa-play';
+      if(currentAudioPlaying === document.getElementById(`audio-${id}`)) {
+        currentAudioPlaying = null;
+      }
+    }
+
+    function openCloneModal(trackFile, title) {
+      currentTrackFile = trackFile;
+      document.getElementById('cloneTitle').textContent = `> ${title}`;
+      document.getElementById('cloneModal').classList.add('active');
+      document.getElementById('cloneText').value = '';
+      document.getElementById('cloneResult').style.display = 'none';
+      
+      if (currentAudioPlaying) {
+        currentAudioPlaying.pause();
+        const oldId = currentAudioPlaying.id.replace('audio-', '');
+        document.getElementById(`icon-${oldId}`).className = 'fas fa-play';
+        currentAudioPlaying = null;
+      }
+    }
+
+    function closeCloneModal() {
+      document.getElementById('cloneModal').classList.remove('active');
+      const cloneAudio = document.getElementById('audio-clone');
+      if (!cloneAudio.paused) {
+        cloneAudio.pause();
+      }
+    }
+
+    async function generateClone() {
+      const text = document.getElementById('cloneText').value.trim();
+      if (!text) {
+        alert("INPUT REQUIRED");
+        return;
+      }
+
+      const btn = document.getElementById('generateBtn');
+      const btnText = btn.querySelector('.btn-text');
+      const spinner = btn.querySelector('.spinner');
+
+      btn.disabled = true;
+      btnText.textContent = "[ EXECUTING... ]";
+      spinner.style.display = 'inline-block';
+      document.getElementById('cloneResult').style.display = 'none';
+
+      try {
+        const response = await fetch('/api/clone', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ trackFile: currentTrackFile, text: text })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          const cloneAudio = document.getElementById('audio-clone');
+          cloneAudio.src = data.url;
+          document.getElementById('downloadCloneBtn').href = data.url;
+          document.getElementById('cloneResult').style.display = 'block';
+        } else {
+          alert(`ERR: ${data.error || 'FAILURE'}`);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("NETWORK_ERR");
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = "[ EXECUTE ]";
+        spinner.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
