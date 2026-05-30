@@ -1,1 +1,54 @@
-const a2_0x4528dd=a2_0x12ab;(function(_0x339ab8,_0x16d79d){const _0xdce864=a2_0x12ab,_0x1b39a9=_0x339ab8();while(!![]){try{const _0x20a758=-parseInt(_0xdce864(0x17a))/0x1+parseInt(_0xdce864(0x196))/0x2*(-parseInt(_0xdce864(0x18f))/0x3)+-parseInt(_0xdce864(0x18b))/0x4+-parseInt(_0xdce864(0x183))/0x5*(-parseInt(_0xdce864(0x199))/0x6)+-parseInt(_0xdce864(0x18d))/0x7+-parseInt(_0xdce864(0x181))/0x8+-parseInt(_0xdce864(0x160))/0x9*(-parseInt(_0xdce864(0x16c))/0xa);if(_0x20a758===_0x16d79d)break;else _0x1b39a9['push'](_0x1b39a9['shift']());}catch(_0x5f1bfa){_0x1b39a9['push'](_0x1b39a9['shift']());}}}(a2_0x4af8,0xef0d8));const a2_0x34fd53=(function(){let _0x30a80a=!![];return function(_0x2cc673,_0x2f7781){const _0x1f2cc5=_0x30a80a?function(){const _0x305333=a2_0x12ab;if(_0x2f7781){const _0x2d800f=_0x2f7781[_0x305333(0x176)](_0x2cc673,arguments);return _0x2f7781=null,_0x2d800f;}}:function(){};return _0x30a80a=![],_0x1f2cc5;};}()),a2_0x9d5276=a2_0x34fd53(this,function(){const _0x1694fd=a2_0x12ab;return a2_0x9d5276[_0x1694fd(0x17f)]()[_0x1694fd(0x182)](_0x1694fd(0x189))[_0x1694fd(0x17f)]()[_0x1694fd(0x16d)](a2_0x9d5276)[_0x1694fd(0x182)](_0x1694fd(0x189));});a2_0x9d5276();let authMode=a2_0x4528dd(0x19d);function a2_0x4af8(){const _0x2ca359=['add','querySelector','authPassword','none','toString','removeItem','2818304bfwTSv','search','3325670qOXbSV','flex','forEach','admin','Please\x20complete\x20the\x20human\x20verification','display','(((.+)+)+)+$','AUTH_ERR:\x20','1029152IpCwjX','turnstile','9448439qPZLWF','sniperTabBtn','34914uyzdxc','.tab-btn[onclick*=\x22switchTab(\x27dashboard\x27\x22]','json','reset','querySelectorAll','[\x20AUTHENTICATE\x20]','auth_token','116OOasFr','active','authTitle','6Rqmbng','remove','NETWORK_ERR','getElementById','login','inline-block','tab-','authUsername','stringify','53829IfrkoY','success','preventDefault','role','block','setItem','LOGIN\x20//\x20AUTHENTICATE','authSubmitBtn','.container','application/json','auth-overlay','#turnstile-widget','6770pdzSYf','constructor','[\x20REGISTER\x20]','adminTabBtn','landing-hero','token','style','loading','error','/api/auth/login','apply','POST','classList','value','1100754GZCUCQ'];a2_0x4af8=function(){return _0x2ca359;};return a2_0x4af8();}function switchAuthTab(_0x408f52,_0x3e394a){const _0x38bcaf=a2_0x4528dd;authMode=_0x408f52,document[_0x38bcaf(0x193)]('.auth-box\x20.tab-btn')[_0x38bcaf(0x185)](_0x4a99d1=>_0x4a99d1['classList'][_0x38bcaf(0x19a)](_0x38bcaf(0x197)));if(_0x3e394a)_0x3e394a['classList'][_0x38bcaf(0x17b)](_0x38bcaf(0x197));else document[_0x38bcaf(0x19c)](_0x38bcaf(0x19f)+_0x408f52)[_0x38bcaf(0x178)][_0x38bcaf(0x17b)](_0x38bcaf(0x197));document['getElementById'](_0x38bcaf(0x198))['textContent']=_0x408f52===_0x38bcaf(0x19d)?_0x38bcaf(0x166):'SIGNUP\x20//\x20REGISTER',document['getElementById'](_0x38bcaf(0x167))['textContent']=_0x408f52==='login'?_0x38bcaf(0x194):_0x38bcaf(0x16e);if(window['turnstile'])turnstile[_0x38bcaf(0x192)](_0x38bcaf(0x16b));}function a2_0x12ab(_0x391221,_0xe4de40){_0x391221=_0x391221-0x15e;const _0x1f9f42=a2_0x4af8();let _0x9d5276=_0x1f9f42[_0x391221];return _0x9d5276;}async function submitAuth(_0x1a7ba7){const _0xebaf21=a2_0x4528dd;_0x1a7ba7[_0xebaf21(0x162)]();const _0x3fa682=document[_0xebaf21(0x19c)](_0xebaf21(0x15e))[_0xebaf21(0x179)],_0x2431aa=document[_0xebaf21(0x19c)](_0xebaf21(0x17d))[_0xebaf21(0x179)],_0x2982ab=document['querySelector']('[name=\x22cf-turnstile-response\x22]')?.[_0xebaf21(0x179)];if(!_0x2982ab){showToast(_0xebaf21(0x187),_0xebaf21(0x174));return;}const _0xd87760=authMode==='login'?_0xebaf21(0x175):'/api/auth/signup',_0x3477bd=document[_0xebaf21(0x17c)]('.auth-submit-btn');_0x3477bd[_0xebaf21(0x178)][_0xebaf21(0x17b)]('loading');try{const _0xdd6c75=await originalFetch(_0xd87760,{'method':_0xebaf21(0x177),'headers':{'Content-Type':_0xebaf21(0x169)},'body':JSON[_0xebaf21(0x15f)]({'username':_0x3fa682,'password':_0x2431aa,'captchaToken':_0x2982ab})}),_0x5c32ed=await _0xdd6c75[_0xebaf21(0x191)]();if(_0xdd6c75['ok']&&_0x5c32ed[_0xebaf21(0x161)]){localStorage[_0xebaf21(0x165)](_0xebaf21(0x195),_0x5c32ed[_0xebaf21(0x171)]),document[_0xebaf21(0x19c)](_0xebaf21(0x16a))[_0xebaf21(0x178)][_0xebaf21(0x19a)](_0xebaf21(0x197));const _0x1a71f2=document[_0xebaf21(0x19c)](_0xebaf21(0x170));if(_0x1a71f2)_0x1a71f2['style'][_0xebaf21(0x188)]='none';const _0x83ada6=document['querySelector'](_0xebaf21(0x168));if(_0x83ada6)_0x83ada6['style'][_0xebaf21(0x188)]=_0xebaf21(0x164);checkAdminRole();}else{showToast(_0xebaf21(0x18a)+_0x5c32ed['error'],'error');if(window[_0xebaf21(0x18c)])turnstile[_0xebaf21(0x192)](_0xebaf21(0x16b));}}catch(_0x1bd64d){showToast(_0xebaf21(0x19b),'error');if(window['turnstile'])turnstile[_0xebaf21(0x192)](_0xebaf21(0x16b));}finally{_0x3477bd[_0xebaf21(0x178)][_0xebaf21(0x19a)](_0xebaf21(0x173));}}function checkAdminRole(){const _0x55273a=a2_0x4528dd,_0x3a044c=localStorage['getItem'](_0x55273a(0x195));if(_0x3a044c){const _0x724ca0=parseJwt(_0x3a044c),_0x2692be=_0x724ca0&&_0x724ca0[_0x55273a(0x163)]===_0x55273a(0x186),_0x2a2988=document[_0x55273a(0x19c)](_0x55273a(0x16f)),_0x248383=document[_0x55273a(0x19c)](_0x55273a(0x18e));if(_0x2a2988)_0x2a2988[_0x55273a(0x172)]['display']=_0x2692be?'inline-block':'none';if(_0x248383)_0x248383['style'][_0x55273a(0x188)]=_0x2692be?_0x55273a(0x19e):_0x55273a(0x17e);}}function logoutUser(){const _0x1110d8=a2_0x4528dd;localStorage[_0x1110d8(0x180)](_0x1110d8(0x195)),document[_0x1110d8(0x19c)](_0x1110d8(0x16a))[_0x1110d8(0x178)][_0x1110d8(0x19a)](_0x1110d8(0x197));const _0x4442fa=document[_0x1110d8(0x19c)]('landing-hero');if(_0x4442fa)_0x4442fa[_0x1110d8(0x172)][_0x1110d8(0x188)]=_0x1110d8(0x184);const _0xc586f7=document[_0x1110d8(0x17c)](_0x1110d8(0x168));if(_0xc586f7)_0xc586f7[_0x1110d8(0x172)][_0x1110d8(0x188)]='none';const _0x50c067=document['getElementById'](_0x1110d8(0x16f)),_0x18fec1=document[_0x1110d8(0x19c)](_0x1110d8(0x18e));if(_0x50c067)_0x50c067[_0x1110d8(0x172)][_0x1110d8(0x188)]=_0x1110d8(0x17e);if(_0x18fec1)_0x18fec1[_0x1110d8(0x172)][_0x1110d8(0x188)]=_0x1110d8(0x17e);switchTab('dashboard',document[_0x1110d8(0x17c)](_0x1110d8(0x190)));if(window[_0x1110d8(0x18c)])turnstile[_0x1110d8(0x192)](_0x1110d8(0x16b));if(typeof stopSniperLoop==='function')stopSniperLoop();}
+// auth.js
+let authMode = 'login';
+
+function switchAuthTab(mode, el) {
+  authMode = mode;
+  document.querySelectorAll('.auth-box .tab-btn').forEach(btn => btn.classList.remove('active'));
+  if (el) el.classList.add('active');
+  
+  document.getElementById('authTitle').textContent = mode === 'login' ? 'LOGIN // AUTH' : 'SIGNUP // REG';
+  if (window.turnstile) turnstile.reset('#turnstile-widget');
+}
+
+async function submitAuth(e) {
+  e.preventDefault();
+  const username = document.getElementById('authUsername').value;
+  const password = document.getElementById('authPassword').value;
+  const captchaToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
+
+  if (!captchaToken) { showToast("Verification required", 'error'); return; }
+
+  const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/signup';
+  try {
+    const res = await originalFetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, captchaToken })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      localStorage.setItem('auth_token', data.token);
+      location.reload(); // Hard reload to clear states
+    } else {
+      showToast(data.error || "Auth failed", 'error');
+      if (window.turnstile) turnstile.reset('#turnstile-widget');
+    }
+  } catch(e) { showToast("Network error", 'error'); }
+}
+
+function checkAdminRole() {
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    const payload = parseJwt(token);
+    const isAdmin = payload && payload.role === 'admin';
+    const adminTab = document.getElementById('adminTabBtn');
+    const sniperTab = document.getElementById('sniperTabBtn');
+    if (adminTab) adminTab.style.display = isAdmin ? 'block' : 'none';
+    if (sniperTab) sniperTab.style.display = isAdmin ? 'block' : 'none';
+  }
+}
+
+function logoutUser() {
+  localStorage.removeItem('auth_token');
+  location.reload();
+}

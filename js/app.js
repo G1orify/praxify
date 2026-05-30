@@ -1,1 +1,28 @@
-function a1_0x3588(){const _0x2daa32=['forEach','search','classList','4165843yTiQbL','landing-hero','736610OypWPe','(((.+)+)+)+$','2270tRKaoB','5541056HYGkCA','style','querySelectorAll','36Fwzoso','getItem','display','5769mYjCUE','remove','313141mzRzNW','apply','25972wSOLsw','addEventListener','getElementById','constructor','querySelector','.tab-btn','auth_token','admin','-view','4060895BdOasO','toString','6JEjasv','7RAXZsg','add','75jYQJhK','none','.view-content','active'];a1_0x3588=function(){return _0x2daa32;};return a1_0x3588();}const a1_0x2b18cd=a1_0x525e;(function(_0x432cc3,_0x20034a){const _0x14493b=a1_0x525e,_0xbb7804=_0x432cc3();while(!![]){try{const _0x38d9e9=-parseInt(_0x14493b(0x15f))/0x1+-parseInt(_0x14493b(0x154))/0x2+parseInt(_0x14493b(0x14b))/0x3*(parseInt(_0x14493b(0x161))/0x4)+parseInt(_0x14493b(0x16a))/0x5*(parseInt(_0x14493b(0x16c))/0x6)+-parseInt(_0x14493b(0x16d))/0x7*(parseInt(_0x14493b(0x157))/0x8)+-parseInt(_0x14493b(0x15d))/0x9*(parseInt(_0x14493b(0x156))/0xa)+parseInt(_0x14493b(0x152))/0xb*(parseInt(_0x14493b(0x15a))/0xc);if(_0x38d9e9===_0x20034a)break;else _0xbb7804['push'](_0xbb7804['shift']());}catch(_0x3982ea){_0xbb7804['push'](_0xbb7804['shift']());}}}(a1_0x3588,0x904d2));const a1_0x1784eb=(function(){let _0x3ac6d8=!![];return function(_0xa251c6,_0x20bb43){const _0x45addd=_0x3ac6d8?function(){const _0x24513e=a1_0x525e;if(_0x20bb43){const _0xa01b19=_0x20bb43[_0x24513e(0x160)](_0xa251c6,arguments);return _0x20bb43=null,_0xa01b19;}}:function(){};return _0x3ac6d8=![],_0x45addd;};}()),a1_0x274980=a1_0x1784eb(this,function(){const _0x1d05bd=a1_0x525e;return a1_0x274980['toString']()[_0x1d05bd(0x150)](_0x1d05bd(0x155))[_0x1d05bd(0x16b)]()[_0x1d05bd(0x164)](a1_0x274980)[_0x1d05bd(0x150)](_0x1d05bd(0x155));});function a1_0x525e(_0x3cd5dc,_0x16ddc4){_0x3cd5dc=_0x3cd5dc-0x14a;const _0x21fdb5=a1_0x3588();let _0x274980=_0x21fdb5[_0x3cd5dc];return _0x274980;}a1_0x274980(),window[a1_0x2b18cd(0x162)]('DOMContentLoaded',()=>{const _0x2c72ea=a1_0x2b18cd;setupFetchInterceptor();const _0x26af9d=localStorage[_0x2c72ea(0x15b)](_0x2c72ea(0x167));if(_0x26af9d){document[_0x2c72ea(0x163)]('auth-overlay')[_0x2c72ea(0x151)][_0x2c72ea(0x15e)]('active');const _0x33d416=document[_0x2c72ea(0x163)](_0x2c72ea(0x153));if(_0x33d416)_0x33d416['style'][_0x2c72ea(0x15c)]=_0x2c72ea(0x14c);const _0x130fb4=document[_0x2c72ea(0x165)]('.container');if(_0x130fb4)_0x130fb4[_0x2c72ea(0x158)][_0x2c72ea(0x15c)]='block';checkAdminRole();}});function switchTab(_0x199fe8,_0x205046){const _0x59f038=a1_0x2b18cd;document[_0x59f038(0x159)](_0x59f038(0x14d))[_0x59f038(0x14f)](_0x54df7e=>_0x54df7e[_0x59f038(0x151)][_0x59f038(0x15e)](_0x59f038(0x14e))),document[_0x59f038(0x159)](_0x59f038(0x166))['forEach'](_0x9e76cb=>_0x9e76cb[_0x59f038(0x151)][_0x59f038(0x15e)](_0x59f038(0x14e)));const _0x1c4718=document[_0x59f038(0x163)](_0x199fe8+_0x59f038(0x169));if(_0x1c4718)_0x1c4718[_0x59f038(0x151)]['add'](_0x59f038(0x14e));if(_0x205046)_0x205046[_0x59f038(0x151)][_0x59f038(0x14a)](_0x59f038(0x14e));_0x199fe8==='sniper'?startSniperLoop():stopSniperLoop(),_0x199fe8===_0x59f038(0x168)&&loadAdminData();}
+// app.js
+window.addEventListener('DOMContentLoaded', () => {
+  setupFetchInterceptor();
+  const token = localStorage.getItem('auth_token');
+  
+  if (token) {
+    document.getElementById('landing-hero').style.display = 'none';
+    document.querySelector('.container').style.display = 'block';
+    checkAdminRole();
+  } else {
+    document.getElementById('landing-hero').style.display = 'flex';
+    document.querySelector('.container').style.display = 'none';
+  }
+});
+
+function switchTab(tabId, el) {
+  document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tabs .tab-btn').forEach(t => t.classList.remove('active'));
+  
+  const view = document.getElementById(`${tabId}-view`);
+  if (view) view.classList.add('active');
+  if (el) el.classList.add('active');
+
+  if (tabId === 'sniper') startSniperLoop();
+  else stopSniperLoop();
+
+  if (tabId === 'admin') loadAdminData();
+}
