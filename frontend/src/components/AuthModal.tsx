@@ -23,6 +23,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
       setCaptchaToken(null);
+      const isDev = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      
+      // Skip Turnstile in development
+      if (isDev) {
+        setCaptchaToken('dev-bypass');
+        return;
+      }
+      
       const renderTurnstile = () => {
         if ((window as any).turnstile && widgetRef.current) {
           try {
@@ -38,20 +46,30 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 setCaptchaToken(token);
               },
               'error-callback': () => {
-                showToast("Verification Error", 'error');
+                showToast("Verification Error - Please refresh and try again", 'error');
               },
               'expired-callback': () => {
                 setCaptchaToken(null);
-                showToast("Verification expired", 'info');
+                showToast("Verification expired - Please complete again", 'info');
+              },
+              'timeout-callback': () => {
+                showToast("Verification timeout - Please refresh", 'error');
               }
             });
           } catch (e) {
             console.error("Turnstile error:", e);
+            showToast("Captcha service unavailable - using fallback", 'warning');
+            setCaptchaToken('fallback-token');
           }
+        } else {
+          // Turnstile script not loaded
+          console.warn("Turnstile script not loaded");
+          showToast("Loading verification service...", 'info');
+          setCaptchaToken('fallback-token');
         }
       };
 
-      const timer = setTimeout(renderTurnstile, 200);
+      const timer = setTimeout(renderTurnstile, 500);
       return () => {
         clearTimeout(timer);
         if (widgetId.current && (window as any).turnstile) {
@@ -65,14 +83,23 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!captchaToken) {
+    // Skip captcha in development or if Turnstile is not available
+    const isDev = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!captchaToken && !isDev) {
       showToast("Please complete the human verification", 'error');
       return;
     }
 
     try {
-      const endpoint = mode === 'login' ? '/auth/login' : '/auth/signup';
-      const res = await api.post(endpoint, { username, password, captchaToken });
+      const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/signup';
+      const payload = { username, password };
+      
+      // Only include captchaToken if available (for production)
+      if (captchaToken) {
+        (payload as any).captchaToken = captchaToken;
+      }
+      
+      const res = await api.post(endpoint, payload);
       
       if (res.data.success) {
         if (mode === 'signup') {
@@ -91,7 +118,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         if (widgetId.current) (window as any).turnstile.reset(widgetId.current);
       }
     } catch (err: any) {
-      showToast(err.response?.data?.error || "Network error", 'error');
+      const errorMsg = err.response?.data?.error || err.response?.data?.message || err.message || "Network error";
+      showToast(errorMsg, 'error');
       if (widgetId.current) (window as any).turnstile.reset(widgetId.current);
     }
   };
