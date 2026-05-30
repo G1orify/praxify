@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cipher | OS</title>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   
   <!-- Discord / Social Embed Metadata -->
   <meta property="og:title" content="CIPHER_OS">
@@ -41,10 +42,8 @@
           <input type="password" id="authPassword" placeholder="PASSWORD" required>
         </div>
         
-        <div class="captcha-container">
-          <div id="captchaImageContainer">Loading Captcha...</div><br>
-          <button type="button" onclick="loadCaptcha()" class="refresh-captcha-btn">[ REFRESH CAPTCHA ]</button>
-          <input type="text" id="authCaptcha" placeholder="ENTER CAPTCHA" required>
+        <div class="captcha-container" style="border: none; background: transparent; padding: 0;">
+          <div id="turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAADZG6f2ROqJOuI5m" data-theme="dark"></div>
         </div>
 
         <button type="submit" class="auth-submit-btn">

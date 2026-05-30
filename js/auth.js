@@ -1,5 +1,4 @@
 let authMode = 'login';
-let currentCaptchaToken = '';
 
 function switchAuthTab(mode, el) {
   authMode = mode;
@@ -9,47 +8,53 @@ function switchAuthTab(mode, el) {
   
   document.getElementById('authTitle').textContent = mode === 'login' ? 'LOGIN // AUTHENTICATE' : 'SIGNUP // REGISTER';
   document.getElementById('authSubmitBtn').textContent = mode === 'login' ? '[ AUTHENTICATE ]' : '[ REGISTER ]';
-  loadCaptcha();
+  
+  // Reset Turnstile if it exists
+  if (window.turnstile) turnstile.reset('#turnstile-widget');
 }
 
+// Legacy function stub to prevent errors from other scripts
 async function loadCaptcha() {
-  try {
-    const res = await originalFetch('/api/auth/captcha');
-    const data = await res.json();
-    if(data.success) {
-      document.getElementById('captchaImageContainer').innerHTML = data.svg;
-      currentCaptchaToken = data.captchaToken;
-    }
-  } catch(e) {
-    console.error("Failed to load captcha", e);
-  }
+  if (window.turnstile) turnstile.reset('#turnstile-widget');
 }
 
 async function submitAuth(e) {
   e.preventDefault();
   const username = document.getElementById('authUsername').value;
   const password = document.getElementById('authPassword').value;
-  const captchaAnswer = document.getElementById('authCaptcha').value;
+  
+  // Get Cloudflare Turnstile token
+  const captchaToken = document.querySelector('[name="cf-turnstile-response"]').value;
+  
+  if (!captchaToken) {
+    showToast("Please complete the human verification", 'error');
+    return;
+  }
   
   const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/signup';
+  const btn = document.querySelector('.auth-submit-btn');
+  btn.classList.add('loading');
   
   try {
     const res = await originalFetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password, captchaToken: currentCaptchaToken, captchaAnswer })
+      body: JSON.stringify({ username, password, captchaToken })
     });
     const data = await res.json();
-    if(res.ok && data.success) {
+    if (res.ok && data.success) {
       localStorage.setItem('auth_token', data.token);
       document.getElementById('auth-overlay').classList.remove('active');
       checkAdminRole();
     } else {
       showToast(`AUTH_ERR: ${data.error}`, 'error');
-      loadCaptcha();
+      if (window.turnstile) turnstile.reset('#turnstile-widget');
     }
   } catch(e) {
     showToast("NETWORK_ERR", 'error');
+    if (window.turnstile) turnstile.reset('#turnstile-widget');
+  } finally {
+    btn.classList.remove('loading');
   }
 }
 
