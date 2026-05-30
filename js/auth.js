@@ -13,11 +13,6 @@ function switchAuthTab(mode, el) {
   if (window.turnstile) turnstile.reset('#turnstile-widget');
 }
 
-// Legacy function stub to prevent errors from other scripts
-async function loadCaptcha() {
-  if (window.turnstile) turnstile.reset('#turnstile-widget');
-}
-
 async function submitAuth(e) {
   e.preventDefault();
   const username = document.getElementById('authUsername').value;
@@ -78,6 +73,6 @@ function logoutUser() {
   if (adminTab) adminTab.style.display = 'none';
   if (sniperTab) sniperTab.style.display = 'none';
   switchTab('dashboard', document.querySelector('.tab-btn[onclick*="switchTab(\'dashboard\'"]'));
-  loadCaptcha();
+  if (window.turnstile) turnstile.reset('#turnstile-widget');
   if (typeof stopSniperLoop === 'function') stopSniperLoop();
 }

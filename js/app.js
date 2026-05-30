@@ -6,8 +6,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if(token) {
     document.getElementById('auth-overlay').classList.remove('active');
     checkAdminRole();
-  } else {
-    loadCaptcha();
   }
 });
 
