@@ -5,273 +5,190 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cipher | OS</title>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  
-  <!-- Discord / Social Embed Metadata -->
-  <meta property="og:title" content="CIPHER_OS">
-  <meta property="og:description" content="closed source intelligence for discord">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://intelhaven.xyz">
-  <meta name="theme-color" content="#000000">
-  <!-- Minecraft-like boxy font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <div id="landing-hero" class="landing-page active">
-    <div class="scanner-line"></div>
-    <div class="data-particles"></div>
-    <div class="landing-content">
-      <h1 class="glitch" data-text="CIPHER_OS">CIPHER_OS</h1>
-      <p class="landing-subtitle">Advanced Discord Intelligence & Target Acquisition</p>
-      
-      <div class="features-grid">
-        <div class="feature-card">
-          <i class="fas fa-satellite-dish"></i>
-          <h3>Real-time Intercepts</h3>
-          <p>Monitor voice channels across multiple guilds simultaneously with our automated fleet.</p>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-database"></i>
-          <h3>OSINT Profiling</h3>
-          <p>Track target aliases, guild history, and voice activity patterns with precision.</p>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-crosshairs"></i>
-          <h3>Target Sniping</h3>
-          <p>Lock onto specific users or channels for priority surveillance and automated tracking.</p>
+  <div class="scanner-line"></div>
+  <div class="data-stream"></div>
+
+  <!-- LANDING PAGE -->
+  <div id="landing-hero">
+    
+    <!-- Hero Section -->
+    <section class="landing-section">
+      <div class="hero-content">
+        <h1 class="glitch" data-text="CIPHER_OS">CIPHER_OS</h1>
+        <p class="landing-subtitle">// CLOSED SOURCE INTELLIGENCE TERMINAL</p>
+        <div class="hero-actions">
+          <button onclick="document.getElementById('auth-overlay').classList.add('active');">[ ESTABLISH_UPLINK ]</button>
         </div>
       </div>
+      <div class="scroll-hint">SCROLL_TO_DETAILS</div>
+    </section>
 
-      <div class="pricing-grid">
+    <!-- Features Section -->
+    <section class="landing-section">
+      <h2 style="margin-bottom: 60px;">[ SYSTEM_CAPABILITIES ]</h2>
+      <div class="features-grid">
+        <div class="feature-box">
+          <i class="fas fa-satellite"></i>
+          <h3>VOICE_INTERCEPT</h3>
+          <p>Real-time autonomous monitoring of encrypted voice channels across high-priority guilds.</p>
+        </div>
+        <div class="feature-box">
+          <i class="fas fa-microchip"></i>
+          <h3>OSINT_ENGINE</h3>
+          <p>Deep historical indexing of aliases, guild transitions, and activity logs.</p>
+        </div>
+        <div class="feature-box">
+          <i class="fas fa-crosshairs"></i>
+          <h3>TARGET_SNIPE</h3>
+          <p>Precision target acquisition with automated fleet deployment and persistence.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="landing-section" style="background: rgba(255,255,255,0.02);">
+      <h2 style="margin-bottom: 60px;">[ LIVE_NETWORK_STATUS ]</h2>
+      <div class="features-grid">
+        <div class="feature-box" style="text-align: center;">
+          <div style="font-size: 3rem; font-weight: 900; margin-bottom: 10px;">142</div>
+          <p>ACTIVE_NODES</p>
+        </div>
+        <div class="feature-box" style="text-align: center;">
+          <div style="font-size: 3rem; font-weight: 900; margin-bottom: 10px;">4.2M</div>
+          <p>REQUESTS_PROCESSED</p>
+        </div>
+        <div class="feature-box" style="text-align: center;">
+          <div style="font-size: 3rem; font-weight: 900; margin-bottom: 10px;">89.4GB</div>
+          <p>DATA_INDEXED</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="landing-section">
+      <h2 style="margin-bottom: 60px;">[ ACCESS_LEVELS ]</h2>
+      <div class="pricing-section">
         <div class="pricing-card">
-          <h3>BASIC TIER</h3>
-          <div class="price">$10 <span>/ mo</span></div>
+          <h3>BASIC_ACCESS</h3>
+          <div class="price">10.00 <span>/ BTC</span></div>
           <ul>
-            <li><i class="fas fa-check"></i> 10 Searches per day</li>
-            <li><i class="fas fa-check"></i> Audio downloads</li>
-            <li><i class="fas fa-check"></i> Basic OSINT profiling</li>
+            <li><i class="fas fa-check"></i> 10 SEARCHES / DAY</li>
+            <li><i class="fas fa-check"></i> MEDIA_DOWNLOADS</li>
+            <li><i class="fas fa-check"></i> BASIC_PROFILING</li>
           </ul>
         </div>
         <div class="pricing-card premium">
-          <div class="badge">RECOMMENDED</div>
-          <h3>PREMIUM TIER</h3>
-          <div class="price">$25 <span>/ mo</span></div>
+          <h3>PREMIUM_UPLINK</h3>
+          <div class="price">25.00 <span>/ BTC</span></div>
           <ul>
-            <li><i class="fas fa-check"></i> 100 Searches per day</li>
-            <li><i class="fas fa-check"></i> Unrestricted audio access</li>
-            <li><i class="fas fa-check"></i> Deep historical OSINT</li>
-            <li><i class="fas fa-check"></i> Priority queue</li>
+            <li><i class="fas fa-check"></i> 100 SEARCHES / DAY</li>
+            <li><i class="fas fa-check"></i> DEEP_OSINT_INDEX</li>
+            <li><i class="fas fa-check"></i> PRIORITY_FLEET_QUEUE</li>
           </ul>
         </div>
       </div>
+    </section>
 
-      <div class="landing-actions">
-        <button class="auth-submit-btn" onclick="document.getElementById('auth-overlay').classList.add('active');" style="width: auto; padding: 15px 40px;">[ ACCESS TERMINAL ]</button>
-      </div>
-    </div>
   </div>
 
+  <!-- AUTH MODAL -->
   <div id="auth-overlay" class="modal-overlay">
-
-  <div class="auth-split-left">
-    <div class="scanlines"></div>
-    <h1>CIPHER_OS</h1>
-  </div>
-  <div class="auth-split-right">
-    <div class="modal auth-box">
-      <div class="modal-header">
-        <h3 id="authTitle">LOGIN // AUTHENTICATE</h3>
+    <div class="auth-box">
+      <h3 id="authTitle" style="margin-bottom: 30px;">LOGIN // AUTH</h3>
+      <div class="tabs" style="justify-content: flex-start; margin-bottom: 30px;">
+        <button class="tab-btn active" onclick="switchAuthTab('login', this)">LOGIN</button>
+        <button class="tab-btn" onclick="switchAuthTab('signup', this)">SIGNUP</button>
       </div>
-      <div class="tabs">
-        <button type="button" class="tab-btn active" id="tab-login" onclick="switchAuthTab('login', this)">LOGIN</button>
-        <button type="button" class="tab-btn" id="tab-signup" onclick="switchAuthTab('signup', this)">SIGNUP</button>
-      </div>
-      
       <form id="authForm" onsubmit="submitAuth(event)">
-        <div class="auth-input-group">
-          <input type="text" id="authUsername" placeholder="USERNAME" required>
-        </div>
-        <div class="auth-input-group">
-          <input type="password" id="authPassword" placeholder="PASSWORD" required>
-        </div>
-        
-        <div class="captcha-container" style="border: none; background: transparent; padding: 0;">
-          <div id="turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAADZG6f2ROqJOuI5m" data-theme="dark"></div>
-        </div>
-
-        <button type="submit" class="auth-submit-btn">
-          <span class="btn-text" id="authSubmitBtn">[ AUTHENTICATE ]</span>
-          <div class="spinner"></div>
-        </button>
+        <input type="text" id="authUsername" placeholder="USERNAME" required>
+        <input type="password" id="authPassword" placeholder="PASSWORD" required>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAADZG6f2ROqJOuI5m" data-theme="dark" id="turnstile-widget"></div>
+        <button type="submit" style="width: 100%; margin-top: 20px;">[ CONNECT ]</button>
       </form>
     </div>
   </div>
-</div>
 
-
+  <!-- DASHBOARD -->
   <div class="container">
     <header>
-      <h1>CIPHER</h1>
+      <h1>CIPHER_OS</h1>
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('dashboard', this)">DASHBOARD</button>
         <button class="tab-btn" id="sniperTabBtn" onclick="switchTab('sniper', this)" style="display: none;">SNIPER_LINK</button>
         <button class="tab-btn" id="adminTabBtn" onclick="switchTab('admin', this)" style="display: none;">ADMIN_CONSOLE</button>
-        <button class="tab-btn" onclick="logoutUser()">LOGOUT</button>
+        <button class="tab-btn" onclick="logoutUser()">DISCONNECT</button>
       </div>
     </header>
 
-    <!-- DASHBOARD VIEW -->
     <div id="dashboard-view" class="view-content active">
       <div class="search-block">
-        <h2>// TARGET ACQUISITION</h2>
-        <form onsubmit="searchUser(event)" class="user-form">
-          <input type="text" name="userId" placeholder="INPUT DISCORD ID..." value="" autocomplete="off" required>
-          <button type="submit">[ SEARCH ]</button>
+        <h2 style="font-size: 1rem; margin-bottom: 20px;">// TARGET_ACQUISITION</h2>
+        <form onsubmit="searchUser(event)" style="display: flex; gap: 10px;">
+          <input type="text" name="userId" placeholder="INPUT DISCORD SNOWFLAKE..." required style="flex: 1;">
+          <button type="submit">[ INITIATE_SEARCH ]</button>
         </form>
       </div>
-
       <div id="dashboard-content">
-        <div class="empty-state">
-          <i class="fas fa-terminal"></i>
-          <h3>AWAITING INPUT</h3>
-          <p>Enter a Target ID to access encrypted voice data.</p>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- SNIPER VIEW -->
-    <div id="sniper-view" class="view-content">
-      <div class="search-block" style="text-align: center; margin-bottom: 30px;">
-        <h2>// ACTIVE FLEET SURVEILLANCE //</h2>
-        <p style="margin-top: 10px; color: rgba(255,255,255,0.7);">Monitor and override bot operations in real-time.</p>
-      </div>
-
-      <div class="sniper-grid" id="sniper-grid">
-        <div class="empty-state">
-          <i class="fas fa-sync fa-spin"></i>
-          <h3>ESTABLISHING UPLINK...</h3>
-        </div>
+        <div class="empty-state">AWAITING_UPLINK_COMMAND...</div>
       </div>
     </div>
 
-    <!-- ADMIN VIEW -->
+    <!-- Other views remain hidden and populated by JS -->
+    <div id="sniper-view" class="view-content"><div class="sniper-grid" id="sniper-grid"></div></div>
     <div id="admin-view" class="view-content">
-      <div class="search-block" style="text-align: center; margin-bottom: 30px;">
-        <h2>// ADMINISTRATOR CONTROLS //</h2>
-        <p style="margin-top: 10px; color: rgba(255,255,255,0.7);">Manage fleet configuration and authentication.</p>
-      </div>
-
-      <div class="admin-stats-grid" id="admin-stats-grid">
-        <!-- Stats will be loaded here -->
-      </div>
-
+      <div id="admin-stats-grid" class="tabs" style="gap: 20px;"></div>
       <div class="search-block">
-        <h3 style="color: #fff; margin-bottom: 20px;">[ FLEET QUICK ACTIONS ]</h3>
-        <div class="fleet-actions">
-          <button onclick="restartFleet()" class="btn-action">[ RESTART FLEET ]</button>
-          <button onclick="freezeFleet(true)" class="btn-action">[ FREEZE ALL ]</button>
-          <button onclick="freezeFleet(false)" class="btn-action">[ UNFREEZE ALL ]</button>
-          <button onclick="panicFleet()" class="btn-action btn-danger">[ PANIC DISCONNECT ]</button>
+        <h3>[ FLEET_CONTROL ]</h3>
+        <div class="tabs" style="margin-top: 20px;">
+          <button onclick="restartFleet()">RESTART_FLEET</button>
         </div>
       </div>
-
       <div class="search-block">
-        <h3 style="color: #00ff00; margin-bottom: 10px;">[ ADD BOT TOKEN ]</h3>
-        <p style="margin-bottom: 15px; font-size: 0.9rem; color: #aaa;">Inject a new Discord bot token into the .env configuration.</p>
-        <form onsubmit="addBotToken(event, 'newBotToken', 'addTokenBtn')" class="user-form">
-          <input type="text" id="newBotToken" placeholder="ENTER DISCORD TOKEN..." autocomplete="off" required>
-          <button type="submit" id="addTokenBtn"><span class="btn-text">[ INJECT ]</span><div class="spinner"></div></button>
+        <h3>[ TOKEN_INJECTION ]</h3>
+        <form onsubmit="addBotToken(event)" style="display: flex; gap: 10px; margin-top: 20px;">
+          <input type="text" id="newBotToken" placeholder="DISCORD_TOKEN" required style="flex: 1;">
+          <button type="submit">INJECT</button>
         </form>
+        <div id="tokensListContainer" style="margin-top: 20px;"></div>
       </div>
-
       <div class="search-block">
-        <h3 style="color: #fff; margin-bottom: 15px;">[ MANAGE BOT TOKENS ]</h3>
-        <div id="tokensListContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-          <!-- Active tokens will be loaded here dynamically -->
-        </div>
-      </div>
-
-      <div class="search-block">
-        <h3 style="color: #fff; margin-bottom: 15px;">[ PENDING PAYMENTS ]</h3>
-        <div id="paymentsListContainer" class="admin-table-container">
-          <!-- Payments will be loaded here -->
-        </div>
-      </div>
-
-      <div class="search-block">
-        <h3 style="color: #fff; margin-bottom: 15px;">[ USER MANAGEMENT ]</h3>
-        <div id="usersListContainer" class="admin-table-container">
-          <!-- Users will be loaded here -->
-        </div>
-      </div>
-
-      <div class="search-block">
-        <h3 style="color: #fff; margin-bottom: 15px;">[ RECENT ACTIVITY ]</h3>
-        <div id="activityLogContainer" class="admin-table-container">
-          <!-- Activity logs will be loaded here -->
-        </div>
+        <h3>[ PENDING_PAYMENTS ]</h3>
+        <div id="paymentsListContainer"></div>
       </div>
     </div>
-
   </div>
 
-  
-
+  <!-- PAYMENT MODAL -->
   <div id="payment-overlay" class="modal-overlay">
-    <div class="modal auth-box" style="max-width: 500px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);">
-      <div class="modal-header" style="justify-content: center; margin-bottom: 20px;">
-        <h3 style="color: #ff3333; text-align: center;"><i class="fas fa-lock" style="margin-right: 10px;"></i>SUBSCRIPTION REQUIRED</h3>
+    <div class="auth-box" style="max-width: 500px;">
+      <h3 style="color: #ff3333; margin-bottom: 20px;">SUBSCRIPTION_REQUIRED</h3>
+      <div style="font-size: 0.8rem; color: #888; margin-bottom: 30px;">
+        BTC: <span style="color:#fff">bc1q0w8qf2gq4xa026y9shxca6enepchxwhcyqdwzk</span><br>
+        LTC: <span style="color:#fff">LRkpb1veWZdmaWdDsKrQyagetxrrjZLhVd</span><br>
+        ETH: <span style="color:#fff">0xbd4011c9742d73024DDa776B1e2cCc3b9Cccb107</span>
       </div>
-      <div style="text-align: center; margin-bottom: 20px; color: #ccc; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.5;">
-        <p>Your access has expired or is inactive.</p>
-        <p style="color: #fff; margin-top: 10px;">Purchase a 1-month subscription to regain access to the intelligence network.</p>
-      </div>
-      
-      <div class="crypto-addresses" style="margin-bottom: 20px; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.1);">
-        <div style="margin-bottom: 15px;">
-          <span style="color: #f7931a; font-weight: bold;">BTC:</span> 
-          <span class="mono" style="font-size: 0.8rem; word-break: break-all; color: #fff;">bc1q0w8qf2gq4xa026y9shxca6enepchxwhcyqdwzk</span>
-        </div>
-        <div style="margin-bottom: 15px;">
-          <span style="color: #345d9d; font-weight: bold;">LTC:</span> 
-          <span class="mono" style="font-size: 0.8rem; word-break: break-all; color: #fff;">LRkpb1veWZdmaWdDsKrQyagetxrrjZLhVd</span>
-        </div>
-        <div>
-          <span style="color: #627eea; font-weight: bold;">ETH:</span> 
-          <span class="mono" style="font-size: 0.8rem; word-break: break-all; color: #fff;">0xbd4011c9742d73024DDa776B1e2cCc3b9Cccb107</span>
-        </div>
-      </div>
-
-      <form id="paymentForm" onsubmit="submitPayment(event)">
-        <div class="auth-input-group">
-          <select id="paymentPlan" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); outline: none; font-family: var(--font-mono); margin-bottom: 15px;">
-            <option value="" disabled selected>SELECT SUBSCRIPTION PLAN</option>
-            <option value="basic">BASIC TIER - $10/mo</option>
-            <option value="premium">PREMIUM TIER - $25/mo</option>
-          </select>
-        </div>
-        <div class="auth-input-group">
-          <select id="paymentCrypto" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); outline: none; font-family: var(--font-mono); margin-bottom: 15px;">
-            <option value="" disabled selected>SELECT CRYPTO PAID</option>
-            <option value="BTC">Bitcoin (BTC)</option>
-            <option value="LTC">Litecoin (LTC)</option>
-            <option value="ETH">Ethereum (ETH)</option>
-          </select>
-        </div>
-        <div class="auth-input-group">
-          <input type="text" id="paymentTxid" placeholder="TRANSACTION ID (TXID)" required>
-        </div>
-        <button type="submit" class="auth-submit-btn" style="border: 1px solid #00ff00; color: #00ff00; background: rgba(0, 255, 0, 0.05);">
-          <span class="btn-text" id="paymentSubmitBtn">[ SUBMIT PAYMENT ]</span>
-          <div class="spinner"></div>
-        </button>
+      <form onsubmit="submitPayment(event)" id="paymentForm">
+        <select id="paymentPlan" required>
+          <option value="" disabled selected>SELECT_PLAN</option>
+          <option value="basic">BASIC ($10.00)</option>
+          <option value="premium">PREMIUM ($25.00)</option>
+        </select>
+        <select id="paymentCrypto" required style="margin-top: 10px;">
+          <option value="" disabled selected>SELECT_ASSET</option>
+          <option value="BTC">BTC</option>
+          <option value="LTC">LTC</option>
+          <option value="ETH">ETH</option>
+        </select>
+        <input type="text" id="paymentTxid" placeholder="TRANSACTION_ID" required style="margin-top: 10px;">
+        <button type="submit" style="width: 100%; margin-top: 20px;">[ SUBMIT_VERIFICATION ]</button>
       </form>
-      <div style="text-align: center; margin-top: 15px;">
-        <button onclick="logoutUser()" style="background: transparent; border: none; color: #aaa; text-decoration: underline; cursor: pointer; font-family: var(--font-mono); font-size: 0.8rem;">Log Out</button>
-      </div>
+      <button onclick="logoutUser()" style="background:transparent; border:none; color:#555; font-size:0.7rem; margin-top:20px; width:100%">CANCEL_AND_LOGOUT</button>
     </div>
   </div>
 
