@@ -18,32 +18,36 @@
 </head>
 <body>
 
-  <div id="auth-overlay" class="modal-overlay active" style="background: #000; z-index: 9999; display: flex;">
-  <div class="auth-split-left" style="flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 50%, #111, #000); border-right: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden;">
-    <div style="position: absolute; top:0; left:0; right:0; bottom:0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px); pointer-events: none;"></div>
-    <h1 style="font-size: 6rem; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); text-transform: uppercase;">CIPHER_OS</h1>
+  <div id="auth-overlay" class="modal-overlay active">
+  <div class="auth-split-left">
+    <div class="scanlines"></div>
+    <h1>CIPHER_OS</h1>
   </div>
-  <div class="auth-split-right" style="flex: 1; display: flex; align-items: center; justify-content: center;">
-    <div class="modal auth-box" style="transform: scale(1); max-width: 400px; border: none; box-shadow: none; background: transparent;">
+  <div class="auth-split-right">
+    <div class="modal auth-box">
       <div class="modal-header">
-        <h3 id="authTitle" style="color: #fff; letter-spacing: 2px;">LOGIN // AUTHENTICATE</h3>
+        <h3 id="authTitle">LOGIN // AUTHENTICATE</h3>
       </div>
-      <div class="tabs" style="margin-bottom: 30px;">
-        <button type="button" class="tab-btn active" id="tab-login" onclick="switchAuthTab('login')" style="padding: 10px 20px;">LOGIN</button>
-        <button type="button" class="tab-btn" id="tab-signup" onclick="switchAuthTab('signup')" style="padding: 10px 20px;">SIGNUP</button>
+      <div class="tabs">
+        <button type="button" class="tab-btn active" id="tab-login" onclick="switchAuthTab('login', this)">LOGIN</button>
+        <button type="button" class="tab-btn" id="tab-signup" onclick="switchAuthTab('signup', this)">SIGNUP</button>
       </div>
       
       <form id="authForm" onsubmit="submitAuth(event)">
-        <div class="auth-input-group"><input type="text" id="authUsername" placeholder="USERNAME" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); outline: none;"></div>
-        <div class="auth-input-group" style="margin-top:15px;"><input type="password" id="authPassword" placeholder="PASSWORD" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); outline: none;"></div>
+        <div class="auth-input-group">
+          <input type="text" id="authUsername" placeholder="USERNAME" required>
+        </div>
+        <div class="auth-input-group">
+          <input type="password" id="authPassword" placeholder="PASSWORD" required>
+        </div>
         
-        <div class="auth-input-group" style="text-align: center; margin-top: 25px; border: 1px dashed rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-          <div id="captchaImageContainer" style="margin-bottom: 15px; display: inline-block; background: #000; padding: 5px; border-radius: 4px;">Loading Captcha...</div><br>
-          <button type="button" onclick="loadCaptcha()" style="padding: 5px 15px; font-size: 0.8rem; margin-bottom: 15px; background: transparent; color: #888; border: 1px solid #333;">[ REFRESH CAPTCHA ]</button>
-          <input type="text" id="authCaptcha" placeholder="ENTER CAPTCHA" required style="width: 100%; padding: 12px; border-radius: 4px; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid rgba(255,255,255,0.1); outline: none; text-align: center; letter-spacing: 2px;">
+        <div class="captcha-container">
+          <div id="captchaImageContainer">Loading Captcha...</div><br>
+          <button type="button" onclick="loadCaptcha()" class="refresh-captcha-btn">[ REFRESH CAPTCHA ]</button>
+          <input type="text" id="authCaptcha" placeholder="ENTER CAPTCHA" required>
         </div>
 
-        <button type="submit" style="width: 100%; margin-top: 25px; padding: 15px; font-size: 1.1rem; background: #fff; color: #000; font-weight: 700; text-transform: uppercase;">
+        <button type="submit" class="auth-submit-btn">
           <span class="btn-text" id="authSubmitBtn">[ AUTHENTICATE ]</span>
           <div class="spinner"></div>
         </button>
@@ -106,6 +110,20 @@
         <p style="margin-top: 10px; color: rgba(255,255,255,0.7);">Manage fleet configuration and authentication.</p>
       </div>
 
+      <div class="admin-stats-grid" id="admin-stats-grid">
+        <!-- Stats will be loaded here -->
+      </div>
+
+      <div class="search-block">
+        <h3 style="color: #fff; margin-bottom: 20px;">[ FLEET QUICK ACTIONS ]</h3>
+        <div class="fleet-actions">
+          <button onclick="restartFleet()" class="btn-action">[ RESTART FLEET ]</button>
+          <button onclick="freezeFleet(true)" class="btn-action">[ FREEZE ALL ]</button>
+          <button onclick="freezeFleet(false)" class="btn-action">[ UNFREEZE ALL ]</button>
+          <button onclick="panicFleet()" class="btn-action btn-danger">[ PANIC DISCONNECT ]</button>
+        </div>
+      </div>
+
       <div class="search-block">
         <h3 style="color: #00ff00; margin-bottom: 10px;">[ ADD BOT TOKEN ]</h3>
         <p style="margin-bottom: 15px; font-size: 0.9rem; color: #aaa;">Inject a new Discord bot token into the .env configuration.</p>
@@ -115,11 +133,24 @@
         </form>
       </div>
 
-      <div class="search-block" style="margin-top: 30px;">
-        <h3 style="color: #ff3333; margin-bottom: 15px;">[ MANAGE BOT TOKENS ]</h3>
-        <p style="margin-bottom: 15px; font-size: 0.9rem; color: #aaa;">View and remove existing Discord self-bot tokens.</p>
+      <div class="search-block">
+        <h3 style="color: #fff; margin-bottom: 15px;">[ MANAGE BOT TOKENS ]</h3>
         <div id="tokensListContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
           <!-- Active tokens will be loaded here dynamically -->
+        </div>
+      </div>
+
+      <div class="search-block">
+        <h3 style="color: #fff; margin-bottom: 15px;">[ USER MANAGEMENT ]</h3>
+        <div id="usersListContainer" class="admin-table-container">
+          <!-- Users will be loaded here -->
+        </div>
+      </div>
+
+      <div class="search-block">
+        <h3 style="color: #fff; margin-bottom: 15px;">[ RECENT ACTIVITY ]</h3>
+        <div id="activityLogContainer" class="admin-table-container">
+          <!-- Activity logs will be loaded here -->
         </div>
       </div>
     </div>
@@ -128,6 +159,11 @@
 
   
 
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/sniper.js"></script>
+  <script src="js/admin.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
