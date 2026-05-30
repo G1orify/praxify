@@ -19,7 +19,60 @@
 </head>
 <body>
 
-  <div id="auth-overlay" class="modal-overlay active">
+  <div id="landing-hero" class="landing-page active">
+    <div class="landing-content">
+      <h1 class="glitch" data-text="CIPHER_OS">CIPHER_OS</h1>
+      <p class="landing-subtitle">Advanced Discord Intelligence & Target Acquisition</p>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-satellite-dish"></i>
+          <h3>Real-time Intercepts</h3>
+          <p>Monitor voice channels across multiple guilds simultaneously with our automated fleet.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-database"></i>
+          <h3>OSINT Profiling</h3>
+          <p>Track target aliases, guild history, and voice activity patterns with precision.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-crosshairs"></i>
+          <h3>Target Sniping</h3>
+          <p>Lock onto specific users or channels for priority surveillance and automated tracking.</p>
+        </div>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>BASIC TIER</h3>
+          <div class="price">$10 <span>/ mo</span></div>
+          <ul>
+            <li><i class="fas fa-check"></i> 10 Searches per day</li>
+            <li><i class="fas fa-check"></i> Audio downloads</li>
+            <li><i class="fas fa-check"></i> Basic OSINT profiling</li>
+          </ul>
+        </div>
+        <div class="pricing-card premium">
+          <div class="badge">RECOMMENDED</div>
+          <h3>PREMIUM TIER</h3>
+          <div class="price">$25 <span>/ mo</span></div>
+          <ul>
+            <li><i class="fas fa-check"></i> 100 Searches per day</li>
+            <li><i class="fas fa-check"></i> Unrestricted audio access</li>
+            <li><i class="fas fa-check"></i> Deep historical OSINT</li>
+            <li><i class="fas fa-check"></i> Priority queue</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="landing-actions">
+        <button class="auth-submit-btn" onclick="document.getElementById('auth-overlay').classList.add('active');" style="width: auto; padding: 15px 40px;">[ ACCESS TERMINAL ]</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="auth-overlay" class="modal-overlay">
+
   <div class="auth-split-left">
     <div class="scanlines"></div>
     <h1>CIPHER_OS</h1>
@@ -192,6 +245,13 @@
 
       <form id="paymentForm" onsubmit="submitPayment(event)">
         <div class="auth-input-group">
+          <select id="paymentPlan" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); outline: none; font-family: var(--font-mono); margin-bottom: 15px;">
+            <option value="" disabled selected>SELECT SUBSCRIPTION PLAN</option>
+            <option value="basic">BASIC TIER - $10/mo</option>
+            <option value="premium">PREMIUM TIER - $25/mo</option>
+          </select>
+        </div>
+        <div class="auth-input-group">
           <select id="paymentCrypto" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); outline: none; font-family: var(--font-mono); margin-bottom: 15px;">
             <option value="" disabled selected>SELECT CRYPTO PAID</option>
             <option value="BTC">Bitcoin (BTC)</option>
@@ -213,12 +273,12 @@
     </div>
   </div>
 
-  <script src="js/utils.js?v=3"></script>
-  <script src="js/auth.js?v=3"></script>
-  <script src="js/dashboard.js?v=3"></script>
-  <script src="js/sniper.js?v=3"></script>
-  <script src="js/admin.js?v=3"></script>
-  <script src="js/payment.js?v=1"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/utils.js?v=4"></script>
+  <script src="js/auth.js?v=4"></script>
+  <script src="js/dashboard.js?v=4"></script>
+  <script src="js/sniper.js?v=4"></script>
+  <script src="js/admin.js?v=4"></script>
+  <script src="js/payment.js?v=2"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>
